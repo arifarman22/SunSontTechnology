@@ -1,6 +1,8 @@
+import { Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const bankingProducts = [
   {
@@ -154,12 +156,16 @@ export default function BankingProducts() {
                     </div>
                   </div>
                   
-                  <button 
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-lg font-semibold transition-colors"
-                    data-testid={`button-contact-${product.id}`}
-                  >
-                    Contact for Quote
-                  </button>
+                  <div className="flex gap-3">
+                    <Link href={`/products/banking/${product.id}`} className="flex-1">
+                      <Button className="w-full" data-testid={`button-view-details-${product.id}`}>
+                        View Details
+                      </Button>
+                    </Link>
+                    <Button variant="outline" className="flex-1" data-testid={`button-contact-${product.id}`}>
+                      Contact for Quote
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
