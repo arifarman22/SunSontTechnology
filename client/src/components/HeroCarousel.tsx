@@ -1,47 +1,84 @@
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+
+// Declare global Google Translate function
+declare global {
+  interface Window {
+    google: any;
+    googleTranslateElementInit: () => void;
+  }
+}
 
 const slides = [
   {
     id: 1,
-    title: ["BANKNOTE", "AND COIN", "DISPENSER", "ATM"],
-    highlight: "DISPENSER",
-    description: "Banknote and Coin Dispenser ATM System SKT-D1059A is specially designed for indoor or lobby scenarios where banknote and metal coin withdrawals are necessary.",
-    model: "SKT-D1059A",
-    background: "bg-gradient-to-r from-blue-900 to-blue-700",
-    textColor: "text-blue-100",
-    highlightColor: "text-accent",
-    buttonColor: "bg-accent hover:bg-accent/90",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+    title: "Powering the Future of Banking",
+    subtitle: "Advanced ATM and CDM Solutions",
+    description: "Transform your banking operations with our intelligent cash management systems designed for security, efficiency, and customer satisfaction.",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    cta: "Explore Banking Solutions",
+    theme: "dark"
   },
   {
     id: 2,
-    title: ["HEALTH", "SCREENING", "KIOSK"],
-    highlight: "SCREENING",
-    description: "Health Screening Kiosk SKT-D1007 is one of our patent products in the Medical industry. We design and development from hardware to software.",
-    model: "SKT-D1007",
-    background: "bg-gradient-to-r from-green-900 to-teal-700",
-    textColor: "text-green-100",
-    highlightColor: "text-green-300",
-    buttonColor: "bg-green-500 hover:bg-green-600",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+    title: "Healthcare Innovation at Your Fingertips",
+    subtitle: "Smart Kiosk Solutions for Modern Healthcare",
+    description: "Streamline patient check-ins, reduce wait times, and enhance healthcare delivery with our cutting-edge self-service kiosks.",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    cta: "Discover Healthcare Tech",
+    theme: "light"
   },
   {
     id: 3,
-    title: ["INNOVATION", "FOR A", "BETTER", "FUTURE"],
-    highlight: "BETTER",
-    description: "With secure and customized self-service solutions",
-    background: "bg-gradient-to-r from-purple-900 to-indigo-800",
-    textColor: "text-purple-100",
-    highlightColor: "text-purple-300",
-    isInnovation: true
+    title: "Secure Payment Infrastructure",
+    subtitle: "PCI-Compliant Security Solutions",
+    description: "Protect your transactions with our certified encryption pin pads and full metal keyboards built for maximum security.",
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    cta: "View Security Products",
+    theme: "dark"
+  },
+  {
+    id: 4,
+    title: "Next-Generation Self-Service",
+    subtitle: "Customizable Kiosk Solutions",
+    description: "From payment terminals to information kiosks, we deliver tailored solutions that enhance customer experience across industries.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    cta: "Learn More",
+    theme: "light"
   }
 ];
 
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    // Wait for Google Translate to load
+    const checkGoogleTranslate = setInterval(() => {
+      if (window.google && window.google.translate) {
+        clearInterval(checkGoogleTranslate);
+      }
+    }, 100);
+
+    return () => clearInterval(checkGoogleTranslate);
+  }, []);
+
+  const handleLanguageChange = (lang: string) => {
+    if (!lang) return;
+    
+    // Find the Google Translate select element
+    const frame = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (frame) {
+      frame.value = lang;
+      frame.dispatchEvent(new Event('change'));
+    } else {
+      // If frame not found, reload with language parameter
+      const currentUrl = window.location.href.split('#')[0].split('?')[0];
+      window.location.href = currentUrl + '#googtrans(en|' + lang + ')';
+      window.location.reload();
+    }
+  };
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -65,10 +102,9 @@ export default function HeroCarousel() {
     onSelect();
     emblaApi.on('select', onSelect);
     
-    // Auto-advance slides every 5 seconds
     const interval = setInterval(() => {
       emblaApi.scrollNext();
-    }, 5000);
+    }, 6000);
 
     return () => {
       clearInterval(interval);
@@ -77,84 +113,80 @@ export default function HeroCarousel() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="relative h-screen bg-gray-900 overflow-hidden">
+    <section className="relative h-[600px] mt-[104px] overflow-hidden">
+      {/* Google Translate Widget */}
+      <div className="absolute top-6 right-6 z-50">
+        <select 
+          onChange={(e) => handleLanguageChange(e.target.value)}
+          className="bg-white border-2 border-gray-300 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-[#049fd9] focus:border-[#049fd9] focus:outline-none cursor-pointer shadow-lg"
+        >
+          <option value="">🌐 Select Language</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="zh-CN">中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="ar">العربية</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+        </select>
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
+      </div>
+
       <div className="embla" ref={emblaRef}>
-        <div className="embla__container flex h-screen">
+        <div className="embla__container flex h-[600px]">
           {slides.map((slide) => (
-            <div key={slide.id} className={`embla__slide flex-none w-full ${slide.background} flex items-center`}>
-              <div className="container mx-auto px-4">
-                {slide.isInnovation ? (
-                  <div className="text-center">
-                    <div className="max-w-4xl mx-auto space-y-8">
-                      <h1 className="text-6xl lg:text-8xl font-bold text-white leading-tight">
-                        {slide.title.map((line, index) => (
-                          <span key={index}>
-                            {line === slide.highlight ? (
-                              <span className={slide.highlightColor}>{line}</span>
-                            ) : (
-                              line
-                            )}
-                            {index < slide.title.length - 1 && <br />}
-                          </span>
-                        ))}
-                      </h1>
-                      <p className={`text-2xl ${slide.textColor} max-w-2xl mx-auto`}>
-                        {slide.description}
-                      </p>
-                      <div className="flex justify-center space-x-6">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-colors cursor-pointer" data-testid="button-watch-film">
-                          <Play className="h-8 w-8 text-white mb-4 mx-auto" />
-                          <div className="text-white font-semibold">Watch Short Film</div>
-                        </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-colors cursor-pointer" data-testid="button-vr-view">
-                          <div className="h-8 w-8 text-white mb-4 mx-auto">🥽</div>
-                          <div className="text-white font-semibold">360° VR View</div>
-                        </div>
-                      </div>
-                    </div>
+            <div key={slide.id} className="embla__slide flex-none w-full relative">
+              {/* Background Image */}
+              <div className="absolute inset-0">
+                <img 
+                  src={slide.image} 
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className={`absolute inset-0 ${
+                  slide.theme === 'dark' 
+                    ? 'bg-gradient-to-r from-black/80 via-black/60 to-transparent' 
+                    : 'bg-gradient-to-r from-white/90 via-white/70 to-transparent'
+                }`}></div>
+              </div>
+
+              {/* Content */}
+              <div className="relative h-full container mx-auto px-6 flex items-center">
+                <div className="max-w-2xl space-y-6">
+                  <div className={`text-sm font-semibold tracking-wider uppercase ${
+                    slide.theme === 'dark' ? 'text-[#00bceb]' : 'text-[#049fd9]'
+                  }`}>
+                    {slide.subtitle}
                   </div>
-                ) : (
-                  <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="text-white space-y-6">
-                      <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                        {slide.title.map((line, index) => (
-                          <span key={index}>
-                            {line === slide.highlight ? (
-                              <span className={slide.highlightColor}>{line}</span>
-                            ) : (
-                              line
-                            )}
-                            {index < slide.title.length - 1 && <br />}
-                          </span>
-                        ))}
-                      </h1>
-                      <p className={`text-xl ${slide.textColor} max-w-lg`}>
-                        {slide.description}
-                      </p>
-                      <div className="flex space-x-4">
-                        <button className={`${slide.buttonColor} text-white px-8 py-4 rounded-lg font-semibold transition-colors`} data-testid="button-learn-more">
-                          LEARN MORE
-                        </button>
-                        <button className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-lg font-semibold transition-colors" data-testid="button-view-specs">
-                          VIEW SPECS
-                        </button>
-                      </div>
-                    </div>
-                    {slide.image && (
-                      <div className="relative">
-                        <img src={slide.image} alt={slide.title.join(" ")} className="rounded-2xl shadow-2xl" />
-                        {slide.model && (
-                          <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
-                            <div className="text-center">
-                              <div className="text-2xl font-bold text-primary">{slide.model}</div>
-                              <div className="text-sm text-muted-foreground">Model</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  <h1 className={`text-5xl lg:text-6xl font-bold leading-tight ${
+                    slide.theme === 'dark' ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    {slide.title}
+                  </h1>
+                  <p className={`text-lg lg:text-xl max-w-xl ${
+                    slide.theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                  }`}>
+                    {slide.description}
+                  </p>
+                  <div className="flex space-x-4 pt-4">
+                    <button className="group flex items-center space-x-2 px-6 py-3 bg-[#049fd9] text-white font-semibold rounded hover:bg-[#00bceb] transition-all" data-testid="button-learn-more">
+                      <span>{slide.cta}</span>
+                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <button className={`px-6 py-3 font-semibold rounded border-2 transition-all ${
+                      slide.theme === 'dark'
+                        ? 'border-white text-white hover:bg-white hover:text-gray-900'
+                        : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+                    }`} data-testid="button-view-specs">
+                      Contact Sales
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           ))}
@@ -162,12 +194,12 @@ export default function HeroCarousel() {
       </div>
 
       {/* Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-4 h-4 rounded-full transition-colors ${
-              index === selectedIndex ? 'bg-white' : 'bg-white/50 hover:bg-white'
+            className={`h-2 rounded-full transition-all ${
+              index === selectedIndex ? 'w-8 bg-[#049fd9]' : 'w-2 bg-white/50 hover:bg-white'
             }`}
             onClick={() => scrollTo(index)}
             data-testid={`button-carousel-dot-${index}`}
@@ -177,18 +209,18 @@ export default function HeroCarousel() {
 
       {/* Navigation Arrows */}
       <button
-        className="absolute left-8 top-1/2 transform -translate-y-1/2 text-white hover:text-accent transition-colors"
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/20 backdrop-blur-sm text-white rounded-full hover:bg-white/30 transition-all z-10"
         onClick={scrollPrev}
         data-testid="button-carousel-prev"
       >
-        <ChevronLeft className="h-8 w-8" />
+        <ChevronLeft className="h-6 w-6" />
       </button>
       <button
-        className="absolute right-8 top-1/2 transform -translate-y-1/2 text-white hover:text-accent transition-colors"
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/20 backdrop-blur-sm text-white rounded-full hover:bg-white/30 transition-all z-10"
         onClick={scrollNext}
         data-testid="button-carousel-next"
       >
-        <ChevronRight className="h-8 w-8" />
+        <ChevronRight className="h-6 w-6" />
       </button>
     </section>
   );

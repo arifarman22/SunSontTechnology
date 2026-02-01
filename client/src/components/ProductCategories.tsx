@@ -6,147 +6,106 @@ import {
   Train, 
   Info, 
   CreditCard,
-  Check
+  ArrowRight
 } from "lucide-react";
 
 const categories = [
   {
     id: "banking",
-    title: "Bank and Identity",
-    description: "Secure banking solutions for modern financial institutions",
+    title: "Banking Solutions",
+    description: "Secure ATM and CDM systems for modern financial institutions",
     icon: Building2,
-    iconColor: "text-blue-600",
-    bgColor: "bg-blue-100",
-    buttonColor: "bg-primary hover:bg-primary/90 text-primary-foreground",
     link: "/products/banking",
-    products: [
-      "Cash Deposit Machine CDM",
-      "Cash Dispenser ATM", 
-      "Smart Teller Machine STM",
-      "Currency Exchange Kiosk"
-    ]
+    image: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "healthcare",
-    title: "Retail and Healthcare",
-    description: "Advanced healthcare kiosks for patient self-service",
+    title: "Healthcare Kiosks",
+    description: "Self-service check-in and patient management systems",
     icon: Heart,
-    iconColor: "text-green-600",
-    bgColor: "bg-green-100",
-    buttonColor: "bg-green-600 hover:bg-green-700 text-white",
     link: "/products/healthcare",
-    products: [
-      "Hospital Check-in Kiosk",
-      "Self-service Healthcare Kiosk",
-      "Mobile Charging Station",
-      "Hotel Check-in Kiosk"
-    ]
+    image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "security",
-    title: "Encrypting PIN PAD",
-    description: "PCI certified security modules for secure transactions",
+    title: "Security Hardware",
+    description: "PCI-certified encryption pin pads and secure keyboards",
     icon: Shield,
-    iconColor: "text-red-600",
-    bgColor: "bg-red-100",
-    buttonColor: "bg-red-600 hover:bg-red-700 text-white",
     link: "/products/security",
-    products: [
-      "PCI Approved EPP",
-      "Full Metal Keyboard",
-      "NON PCI Pinpad"
-    ]
+    image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "transportation",
-    title: "Public & Transportation",
-    description: "Smart ticketing and transportation solutions",
+    title: "Transportation",
+    description: "Smart ticketing and payment kiosks for public transit",
     icon: Train,
-    iconColor: "text-purple-600",
-    bgColor: "bg-purple-100",
-    buttonColor: "bg-purple-600 hover:bg-purple-700 text-white",
     link: "/products/transportation",
-    products: [
-      "Ticket Vending Kiosk",
-      "Card Dispenser Kiosk",
-      "Card Top-up Kiosk",
-      "Parking Payment Kiosk"
-    ]
+    image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "information",
-    title: "Information & AR",
-    description: "Interactive information and wayfinding solutions",
+    title: "Information Systems",
+    description: "Interactive wayfinding and digital signage solutions",
     icon: Info,
-    iconColor: "text-indigo-600",
-    bgColor: "bg-indigo-100",
-    buttonColor: "bg-indigo-600 hover:bg-indigo-700 text-white",
     link: "/products/information",
-    products: [
-      "Information Kiosk",
-      "Digital Signage",
-      "Way Finding Solutions",
-      "Queuing System"
-    ]
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "payment",
     title: "Payment Terminals",
-    description: "Modern payment processing for all transactions",
+    description: "Versatile payment kiosks for cryptocurrency and cash",
     icon: CreditCard,
-    iconColor: "text-yellow-600",
-    bgColor: "bg-yellow-100",
-    buttonColor: "bg-yellow-600 hover:bg-yellow-700 text-white",
     link: "/products/payment",
-    products: [
-      "Bitcoin Payment Kiosk",
-      "Cash Payment Kiosk",
-      "Wall Mount Payment Kiosk",
-      "Cashless Payment Kiosk"
-    ]
+    image: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   }
 ];
 
 export default function ProductCategories() {
   return (
-    <section className="py-20 bg-muted">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-foreground mb-4">OUR PRODUCTS</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive self-service solutions for banking, healthcare, security, and payment industries
+          <div className="text-sm font-semibold text-[#049fd9] mb-3 uppercase tracking-wider">Our Solutions</div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Products Built for Innovation</h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Comprehensive self-service technology solutions designed to transform customer experiences across industries
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((category) => {
             const IconComponent = category.icon;
             return (
-              <div key={category.id} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow group">
-                <div className="mb-6">
-                  <div className={`w-16 h-16 ${category.bgColor} rounded-xl flex items-center justify-center mb-4`}>
-                    <IconComponent className={`h-8 w-8 ${category.iconColor}`} />
+              <Link key={category.id} href={category.link}>
+                <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer h-full">
+                  {/* Image */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={category.image} 
+                      alt={category.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4">
+                      <div className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <IconComponent className="h-6 w-6 text-[#049fd9]" />
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">{category.title}</h3>
-                  <p className="text-muted-foreground">{category.description}</p>
+                  
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#049fd9] transition-colors">
+                      {category.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">{category.description}</p>
+                    <div className="flex items-center text-[#049fd9] font-semibold text-sm group-hover:gap-2 transition-all">
+                      <span>Learn more</span>
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  {category.products.map((product, index) => (
-                    <li key={index} className="flex items-center text-sm">
-                      <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                      {product}
-                    </li>
-                  ))}
-                </ul>
-                <Link href={category.link}>
-                  <button 
-                    className={`w-full ${category.buttonColor} py-3 rounded-lg font-semibold transition-colors`}
-                    data-testid={`button-explore-${category.id}`}
-                  >
-                    Explore {category.title === "Bank and Identity" ? "Banking" : category.title} Solutions
-                  </button>
-                </Link>
-              </div>
+              </Link>
             );
           })}
         </div>
