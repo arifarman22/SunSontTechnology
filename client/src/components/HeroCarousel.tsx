@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
 
 // Declare global Google Translate function
@@ -18,6 +19,7 @@ const slides = [
     description: "Transform your banking operations with our intelligent cash management systems designed for security, efficiency, and customer satisfaction.",
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     cta: "Explore Banking Solutions",
+    ctaLink: "/products/banking",
     theme: "dark"
   },
   {
@@ -27,6 +29,7 @@ const slides = [
     description: "Streamline patient check-ins, reduce wait times, and enhance healthcare delivery with our cutting-edge self-service kiosks.",
     image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     cta: "Discover Healthcare Tech",
+    ctaLink: "/products/healthcare",
     theme: "light"
   },
   {
@@ -36,6 +39,7 @@ const slides = [
     description: "Protect your transactions with our certified encryption pin pads and full metal keyboards built for maximum security.",
     image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     cta: "View Security Products",
+    ctaLink: "/products/security",
     theme: "dark"
   },
   {
@@ -45,6 +49,7 @@ const slides = [
     description: "From payment terminals to information kiosks, we deliver tailored solutions that enhance customer experience across industries.",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     cta: "Learn More",
+    ctaLink: "/about",
     theme: "light"
   }
 ];
@@ -185,17 +190,21 @@ export default function HeroCarousel() {
                     {slide.description}
                   </p>
                   <div className="flex space-x-4 pt-4">
-                    <button className="group flex items-center space-x-2 px-6 py-3 bg-[#049fd9] text-white font-semibold rounded hover:bg-[#00bceb] transition-all" data-testid="button-learn-more">
-                      <span>{slide.cta}</span>
-                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <button className={`px-6 py-3 font-semibold rounded border-2 transition-all ${
-                      slide.theme === 'dark'
-                        ? 'border-white text-white hover:bg-white hover:text-gray-900'
-                        : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
-                    }`} data-testid="button-view-specs">
-                      Contact Sales
-                    </button>
+                    <Link href={slide.ctaLink}>
+                      <button className="group flex items-center space-x-2 px-6 py-3 bg-[#049fd9] text-white font-semibold rounded hover:bg-[#00bceb] transition-all" data-testid="button-learn-more">
+                        <span>{slide.cta}</span>
+                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </Link>
+                    <Link href="/contact">
+                      <button className={`px-6 py-3 font-semibold rounded border-2 transition-all ${
+                        slide.theme === 'dark'
+                          ? 'border-white text-white hover:bg-white hover:text-gray-900'
+                          : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+                      }`} data-testid="button-view-specs">
+                        Contact Sales
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
