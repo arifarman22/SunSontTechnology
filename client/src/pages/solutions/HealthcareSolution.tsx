@@ -1,11 +1,11 @@
-import Header from "@/components/Header";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { Check, ArrowRight } from "lucide-react";
 
 export default function HealthcareSolution() {
   return (
     <div className="min-h-screen">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
@@ -220,3 +220,4 @@ export default function HealthcareSolution() {
     </div>
   );
 }
+

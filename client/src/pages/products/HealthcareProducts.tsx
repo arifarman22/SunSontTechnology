@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 
 const healthcareProducts = [
@@ -95,7 +95,7 @@ const healthcareProducts = [
 export default function HealthcareProducts() {
   return (
     <div className="min-h-screen">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
@@ -174,3 +174,4 @@ export default function HealthcareProducts() {
     </div>
   );
 }
+

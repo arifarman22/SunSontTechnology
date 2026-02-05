@@ -1,6 +1,6 @@
 import { useRoute, Link } from "wouter";
 import { useEffect } from "react";
-import Header from "@/components/Header";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -328,7 +328,7 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">

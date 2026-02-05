@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import Header from "@/components/Header";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
@@ -93,7 +93,7 @@ const bankingProducts = [
 export default function BankingProducts() {
   return (
     <div className="min-h-screen">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
@@ -176,3 +176,4 @@ export default function BankingProducts() {
     </div>
   );
 }
+
