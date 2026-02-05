@@ -7,7 +7,6 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const [megaMenuTimeout, setMegaMenuTimeout] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -15,19 +14,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleMouseEnter = () => {
-    if (megaMenuTimeout) clearTimeout(megaMenuTimeout);
-    setIsMegaMenuOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    const timeout = setTimeout(() => setIsMegaMenuOpen(false), 150);
-    setMegaMenuTimeout(timeout);
+  const toggleMegaMenu = () => {
+    setIsMegaMenuOpen(!isMegaMenuOpen);
   };
 
   const closeMegaMenu = () => {
     setIsMegaMenuOpen(false);
-    if (megaMenuTimeout) clearTimeout(megaMenuTimeout);
   };
 
   return (
@@ -72,12 +64,9 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
             {/* Products with Mega Menu */}
-            <div 
-              className="relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
+            <div className="relative">
               <button 
+                onClick={toggleMegaMenu}
                 className={`flex items-center px-4 py-2 text-sm font-medium transition-colors ${
                   isMegaMenuOpen ? 'text-[#049fd9]' : 'text-gray-700 hover:text-[#049fd9]'
                 }`}
@@ -85,7 +74,9 @@ export default function Navbar() {
                 aria-haspopup="true"
               >
                 Products 
-                <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${isMegaMenuOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${
+                  isMegaMenuOpen ? 'rotate-180' : ''
+                }`} />
               </button>
             </div>
 
