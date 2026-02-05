@@ -10,24 +10,30 @@ const companyLinks = [
   {
     id: "about",
     name: "About Us",
-    description: "Learn about our mission, vision, and 25+ years of innovation in self-service technology",
+    description: "The company enhances comprehensive competitiveness through continuous technological innovation and new product R&D. Our encryption keyboard based on cryptography has been widely used worldwide.",
     icon: Users,
     link: "/about"
   },
   {
-    id: "team",
-    name: "Our Team",
-    description: "Meet the experts behind our cutting-edge solutions and global success",
+    id: "leadership",
+    name: "Leadership",
+    description: "Flat management solves disadvantages of hierarchical structures, accelerates information flow, and improves decision-making efficiency.",
     icon: Target,
     link: "/about"
   },
   {
-    id: "careers",
-    name: "Careers",
-    description: "Join our team and help shape the future of self-service technology",
+    id: "history",
+    name: "History",
+    description: "From 2003 to 2008, established in High-tech Software Park, Shenzhen. Starting from financial encryption, we entered banking self-service and became a strategic partner of ICBC.",
+    icon: Award,
+    link: "/about"
+  },
+  {
+    id: "culture",
+    name: "Culture",
+    description: "Corporate Culture: New Sunson Chinese Dream. Our growth is as prosperous as the sun—enthusiasm like a flame, and independent innovation like the sun, producing light and heat by itself.",
     icon: Briefcase,
-    link: "/about",
-    badge: "We're Hiring"
+    link: "/about"
   }
 ];
 
