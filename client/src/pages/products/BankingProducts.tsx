@@ -112,59 +112,42 @@ export default function BankingProducts() {
       {/* Products Grid */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6">
             {bankingProducts.map((product) => (
               <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-200">
-                <div className="aspect-video overflow-hidden">
+                <div className="aspect-square overflow-hidden">
                   <img 
                     src={product.image} 
                     alt={product.name}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-2xl font-bold text-gray-900">{product.name}</h3>
-                    <span className="text-sm bg-[#049fd9]/10 text-[#049fd9] px-3 py-1 rounded-full font-semibold">
+                <div className="p-3">
+                  <div className="mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2">{product.name}</h3>
+                    <span className="text-xs bg-[#049fd9]/10 text-[#049fd9] px-2 py-0.5 rounded-full font-semibold inline-block mt-1">
                       {product.model}
                     </span>
                   </div>
-                  <p className="text-gray-600 mb-6">{product.description}</p>
+                  <p className="text-xs text-gray-600 mb-3 line-clamp-2">{product.description}</p>
                   
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Key Features</h4>
-                    <ul className="space-y-2">
-                      {product.features.map((feature, index) => (
-                        <li key={index} className="flex items-center text-sm text-gray-600">
-                          <div className="w-2 h-2 bg-[#049fd9] rounded-full mr-3"></div>
-                          {feature}
+                  <div className="mb-3">
+                    <h4 className="font-semibold text-gray-900 mb-2 text-sm">Key Features</h4>
+                    <ul className="space-y-1">
+                      {product.features.slice(0, 3).map((feature, index) => (
+                        <li key={index} className="flex items-center text-xs text-gray-600">
+                          <div className="w-1.5 h-1.5 bg-[#049fd9] rounded-full mr-2 flex-shrink-0"></div>
+                          <span className="line-clamp-1">{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                   
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Specifications</h4>
-                    <div className="grid grid-cols-1 gap-2">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between text-sm border-b border-gray-200 pb-2">
-                          <span className="text-gray-600">{key}:</span>
-                          <span className="font-medium text-gray-900">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <Link href={`/products/banking/${product.id}`} className="flex-1">
-                      <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb]" data-testid={`button-view-details-${product.id}`}>
-                        View Details
-                      </Button>
-                    </Link>
-                    <Button variant="outline" className="flex-1 border-gray-300" data-testid={`button-contact-${product.id}`}>
-                      Contact for Quote
+                  <Link href={`/products/banking/${product.id}`} className="w-full">
+                    <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto" data-testid={`button-view-details-${product.id}`}>
+                      View Details
                     </Button>
-                  </div>
+                  </Link>
                 </div>
               </div>
             ))}
