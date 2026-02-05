@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -96,7 +96,7 @@ const informationProducts = [
 export default function InformationProducts() {
   return (
     <div className="min-h-screen">
-      <Header />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-indigo-900 to-indigo-700 text-white py-20">
@@ -175,3 +175,4 @@ export default function InformationProducts() {
     </div>
   );
 }
+
