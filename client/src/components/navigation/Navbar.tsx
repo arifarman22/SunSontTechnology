@@ -147,20 +147,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
-            <Link href="/contact">
-              <button className="px-4 py-2 text-sm font-medium text-[#049fd9] hover:text-[#00bceb] transition-colors">
-                Sign In
-              </button>
-            </Link>
-            <Link href="/contact">
-              <button className="px-5 py-2 text-sm font-medium bg-[#049fd9] text-white rounded hover:bg-[#00bceb] transition-colors shadow-sm">
-                Get Started
-              </button>
-            </Link>
-          </div>
-
           {/* Mobile Menu Button */}
           <button 
             className="lg:hidden text-gray-700"
