@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Menu, X, ChevronDown } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
+import SolutionsMegaDropdown from "./SolutionsMegaDropdown";
+import CompanyMegaDropdown from "./CompanyMegaDropdown";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,19 +118,6 @@ export default function Navbar() {
                   isSolutionsOpen ? 'rotate-180' : ''
                 }`} />
               </button>
-              {isSolutionsOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={closeAllMenus} />
-                  <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-2xl border border-gray-100 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <ul className="p-4 space-y-2">
-                      <li><Link href="/solutions/cdm" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">CDM Solution</Link></li>
-                      <li><Link href="/solutions/healthcare" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">Healthcare Kiosk Solution</Link></li>
-                      <li><Link href="/solutions/epp" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">EPP V4 V5 V6 Solution</Link></li>
-                      <li><Link href="/solutions/payment" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">Payment Kiosk Solution</Link></li>
-                    </ul>
-                  </div>
-                </>
-              )}
             </div>
 
             {/* Company */}
@@ -145,18 +134,6 @@ export default function Navbar() {
                   isCompanyOpen ? 'rotate-180' : ''
                 }`} />
               </button>
-              {isCompanyOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={closeAllMenus} />
-                  <div className="absolute top-full left-0 mt-1 w-48 bg-white shadow-2xl border border-gray-100 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <ul className="p-4 space-y-2">
-                      <li><Link href="/about" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">About Us</Link></li>
-                      <li><Link href="/about" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">Our Team</Link></li>
-                      <li><Link href="/about" onClick={closeAllMenus} className="text-sm text-gray-700 hover:text-[#049fd9] block py-2 px-3 rounded hover:bg-gray-50 transition-colors">Careers</Link></li>
-                    </ul>
-                  </div>
-                </>
-              )}
             </div>
 
             {/* News */}
@@ -211,8 +188,10 @@ export default function Navbar() {
         )}
       </nav>
 
-      {/* Mega Dropdown */}
+      {/* Mega Dropdowns */}
       <MegaDropdown isOpen={isMegaMenuOpen} onClose={closeMegaMenu} />
+      <SolutionsMegaDropdown isOpen={isSolutionsOpen} onClose={closeAllMenus} />
+      <CompanyMegaDropdown isOpen={isCompanyOpen} onClose={closeAllMenus} />
     </header>
   );
 }
