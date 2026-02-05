@@ -16,6 +16,7 @@ import EppSolution from "@/pages/solutions/EppSolution";
 import PaymentSolution from "@/pages/solutions/PaymentSolution";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import News from "@/pages/News";
 import ProductDetail from "@/pages/products/ProductDetail";
 import NotFound from "@/pages/not-found";
 
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/solutions/payment" component={PaymentSolution} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/news" component={News} />
       <Route component={NotFound} />
     </Switch>
   );
