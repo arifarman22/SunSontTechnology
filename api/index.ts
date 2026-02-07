@@ -1,64 +1,81 @@
-import express from "express";
-import cors from "cors";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { storage } from "../server/storage";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-// Products
-app.get("/api/products", async (req, res) => {
-  const products = await storage.getProducts();
-  res.json(products);
-});
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
-app.post("/api/products", async (req, res) => {
-  const product = await storage.createProduct(req.body);
-  res.status(201).json(product);
-});
+  const { url, method } = req;
+  const path = url?.split('?')[0] || '';
 
-// Solutions
-app.get("/api/solutions", async (req, res) => {
-  const solutions = await storage.getSolutions();
-  res.json(solutions);
-});
+  try {
+    // Products
+    if (path.endsWith('/products')) {
+      if (method === 'GET') {
+        const products = await storage.getProducts();
+        return res.json(products);
+      }
+      if (method === 'POST') {
+        const product = await storage.createProduct(req.body);
+        return res.status(201).json(product);
+      }
+    }
 
-app.post("/api/solutions", async (req, res) => {
-  const solution = await storage.createSolution(req.body);
-  res.status(201).json(solution);
-});
+    // Solutions
+    if (path.endsWith('/solutions')) {
+      if (method === 'GET') {
+        const solutions = await storage.getSolutions();
+        return res.json(solutions);
+      }
+      if (method === 'POST') {
+        const solution = await storage.createSolution(req.body);
+        return res.status(201).json(solution);
+      }
+    }
 
-// Hero Slides
-app.get("/api/hero-slides", async (req, res) => {
-  const slides = await storage.getHeroSlides();
-  res.json(slides);
-});
+    // Hero Slides
+    if (path.endsWith('/hero-slides')) {
+      if (method === 'GET') {
+        const slides = await storage.getHeroSlides();
+        return res.json(slides);
+      }
+      if (method === 'POST') {
+        const slide = await storage.createHeroSlide(req.body);
+        return res.status(201).json(slide);
+      }
+    }
 
-app.post("/api/hero-slides", async (req, res) => {
-  const slide = await storage.createHeroSlide(req.body);
-  res.status(201).json(slide);
-});
+    // News
+    if (path.endsWith('/news')) {
+      if (method === 'GET') {
+        const posts = await storage.getNewsPosts();
+        return res.json(posts);
+      }
+      if (method === 'POST') {
+        const post = await storage.createNewsPost(req.body);
+        return res.status(201).json(post);
+      }
+    }
 
-// News
-app.get("/api/news", async (req, res) => {
-  const posts = await storage.getNewsPosts();
-  res.json(posts);
-});
+    // Company Info
+    if (path.endsWith('/company-info')) {
+      if (method === 'GET') {
+        const info = await storage.getCompanyInfo();
+        return res.json(info || {});
+      }
+      if (method === 'PUT') {
+        const info = await storage.updateCompanyInfo(req.body);
+        return res.json(info);
+      }
+    }
 
-app.post("/api/news", async (req, res) => {
-  const post = await storage.createNewsPost(req.body);
-  res.status(201).json(post);
-});
-
-// Company Info
-app.get("/api/company-info", async (req, res) => {
-  const info = await storage.getCompanyInfo();
-  res.json(info || {});
-});
-
-app.put("/api/company-info", async (req, res) => {
-  const info = await storage.updateCompanyInfo(req.body);
-  res.json(info);
-});
-
-export default app;
+    return res.status(404).json({ error: 'Not found' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
