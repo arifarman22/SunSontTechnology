@@ -17,13 +17,20 @@ export async function translateText(req: Request, res: Response) {
         q: text,
         source: 'en',
         target: targetLang,
-        format: 'html'
+        format: 'text'
       })
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('LibreTranslate error:', errorText);
+      return res.status(response.status).json({ error: 'Translation service error' });
+    }
 
     const data = await response.json();
     res.json(data);
   } catch (error) {
+    console.error('Translation failed:', error);
     res.status(500).json({ error: 'Translation failed' });
   }
 }
