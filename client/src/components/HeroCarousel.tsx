@@ -2,15 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
-
-// Declare global Google Translate function
-declare global {
-  interface Window {
-    google: any;
-    googleTranslateElementInit: () => void;
-    translatePage: (lang: string) => void;
-  }
-}
+import { translatePage } from "../lib/translate";
 
 const slides = [
   {
@@ -59,22 +51,6 @@ export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  useEffect(() => {
-    // Wait for Google Translate to load and make widget visible
-    const checkGoogleTranslate = setInterval(() => {
-      if (window.google && window.google.translate) {
-        clearInterval(checkGoogleTranslate);
-      }
-    }, 100);
-
-    return () => clearInterval(checkGoogleTranslate);
-  }, []);
-
-  const handleLanguageChange = (lang: string) => {
-    if (!lang) return;
-    // Language selection - Google Translate widget will handle translation
-  };
-
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -106,6 +82,10 @@ export default function HeroCarousel() {
       emblaApi.off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  const handleLanguageChange = (lang: string) => {
+    if (lang) translatePage(lang);
+  };
 
   return (
     <section className="relative h-[600px] mt-[104px] overflow-hidden">
@@ -170,12 +150,12 @@ export default function HeroCarousel() {
                   </div>
                   <h1 className={`text-5xl lg:text-6xl font-bold leading-tight ${
                     slide.theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
+                  }`} data-translate>
                     {slide.title}
                   </h1>
                   <p className={`text-lg lg:text-xl max-w-xl ${
                     slide.theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
-                  }`}>
+                  }`} data-translate>
                     {slide.description}
                   </p>
                   <div className="flex space-x-4 pt-4">
