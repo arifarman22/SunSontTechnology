@@ -146,7 +146,6 @@ export default function HeroCarousel() {
           <option value="ur">🇵🇰 اردو</option>
           <option value="fa">🇮🇷 فارسی</option>
         </select>
-        <div id="google_translate_element" style={{ display: 'none' }}></div>
       </div>
 
       <div className="embla" ref={emblaRef}>
