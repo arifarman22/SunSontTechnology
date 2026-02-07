@@ -71,17 +71,21 @@ export default function HeroCarousel() {
   }, []);
 
   const handleLanguageChange = (lang: string) => {
-    if (!lang || lang === 'en') {
-      // Reload to English (remove translation)
-      const baseUrl = window.location.origin + window.location.pathname;
-      window.location.href = baseUrl;
-      return;
-    }
+    if (!lang) return;
     
-    // Redirect to Google Translate URL
-    const currentUrl = window.location.href;
-    const translateUrl = `https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(currentUrl)}`;
-    window.location.href = translateUrl;
+    // Wait for Google Translate widget to be ready
+    const tryTranslate = () => {
+      const selectField = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (selectField) {
+        selectField.value = lang;
+        selectField.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        // If not found, try again after a short delay
+        setTimeout(tryTranslate, 100);
+      }
+    };
+    
+    tryTranslate();
   };
 
   const scrollPrev = useCallback(() => {
