@@ -73,12 +73,19 @@ export default function HeroCarousel() {
   const handleLanguageChange = (lang: string) => {
     if (!lang) return;
     
-    // Wait a bit for Google Translate to be ready
-    setTimeout(() => {
-      if (window.translatePage) {
-        window.translatePage(lang);
-      }
-    }, 300);
+    console.log('Attempting to translate to:', lang);
+    
+    // Try immediately
+    if (window.translatePage) {
+      window.translatePage(lang);
+    } else {
+      // If function not available, wait and try again
+      setTimeout(() => {
+        if (window.translatePage) {
+          window.translatePage(lang);
+        }
+      }, 1000);
+    }
   };
 
   const scrollPrev = useCallback(() => {
