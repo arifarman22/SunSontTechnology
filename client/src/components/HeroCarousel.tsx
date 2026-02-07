@@ -71,21 +71,9 @@ export default function HeroCarousel() {
   }, []);
 
   const handleLanguageChange = (lang: string) => {
+    // This dropdown is for display only
+    // Users should use the Google Translate widget at the top of the page
     if (!lang) return;
-    
-    // Wait for Google Translate widget to be ready
-    const tryTranslate = () => {
-      const selectField = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      if (selectField) {
-        selectField.value = lang;
-        selectField.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        // If not found, try again after a short delay
-        setTimeout(tryTranslate, 100);
-      }
-    };
-    
-    tryTranslate();
   };
 
   const scrollPrev = useCallback(() => {
