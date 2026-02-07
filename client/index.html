@@ -20,11 +20,26 @@
       }
       
       function translatePage(lang) {
-        var selectField = document.querySelector('.goog-te-combo');
-        if (selectField) {
-          selectField.value = lang;
-          selectField.dispatchEvent(new Event('change'));
-        }
+        // Try multiple times to find the select element
+        var attempts = 0;
+        var maxAttempts = 20;
+        
+        var tryTranslate = setInterval(function() {
+          var selectField = document.querySelector('.goog-te-combo');
+          if (selectField) {
+            clearInterval(tryTranslate);
+            selectField.value = lang;
+            // Trigger change event multiple ways
+            selectField.dispatchEvent(new Event('change', { bubbles: true }));
+            var evt = document.createEvent('HTMLEvents');
+            evt.initEvent('change', true, true);
+            selectField.dispatchEvent(evt);
+          }
+          attempts++;
+          if (attempts >= maxAttempts) {
+            clearInterval(tryTranslate);
+          }
+        }, 100);
       }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
