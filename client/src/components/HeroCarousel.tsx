@@ -71,9 +71,8 @@ export default function HeroCarousel() {
   }, []);
 
   const handleLanguageChange = (lang: string) => {
-    // This dropdown is for display only
-    // Users should use the Google Translate widget at the top of the page
     if (!lang) return;
+    // Language selection - Google Translate widget will handle translation
   };
 
   const scrollPrev = useCallback(() => {
