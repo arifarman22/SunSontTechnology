@@ -63,6 +63,16 @@ export default function HeroCarousel() {
     const checkGoogleTranslate = setInterval(() => {
       if (window.google && window.google.translate) {
         clearInterval(checkGoogleTranslate);
+        // Force Google Translate to scan the page
+        setTimeout(() => {
+          const translateElement = window.google.translate.TranslateElement;
+          if (translateElement) {
+            const body = document.body;
+            body.classList.remove('translated-ltr', 'translated-rtl');
+            const event = new Event('DOMContentLoaded');
+            document.dispatchEvent(event);
+          }
+        }, 500);
       }
     }, 100);
 
