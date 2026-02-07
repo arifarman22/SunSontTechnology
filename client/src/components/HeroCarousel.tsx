@@ -8,6 +8,7 @@ declare global {
   interface Window {
     google: any;
     googleTranslateElementInit: () => void;
+    translatePage: (lang: string) => void;
   }
 }
 
@@ -59,20 +60,10 @@ export default function HeroCarousel() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    // Wait for Google Translate to load
+    // Wait for Google Translate to load and make widget visible
     const checkGoogleTranslate = setInterval(() => {
       if (window.google && window.google.translate) {
         clearInterval(checkGoogleTranslate);
-        // Force Google Translate to scan the page
-        setTimeout(() => {
-          const translateElement = window.google.translate.TranslateElement;
-          if (translateElement) {
-            const body = document.body;
-            body.classList.remove('translated-ltr', 'translated-rtl');
-            const event = new Event('DOMContentLoaded');
-            document.dispatchEvent(event);
-          }
-        }, 500);
       }
     }, 100);
 
@@ -82,28 +73,12 @@ export default function HeroCarousel() {
   const handleLanguageChange = (lang: string) => {
     if (!lang) return;
     
-    // Method 1: Try to find and trigger the hidden Google Translate select
-    const frame = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (frame) {
-      frame.value = lang;
-      frame.dispatchEvent(new Event('change', { bubbles: true }));
-      return;
-    }
-    
-    // Method 2: Use URL hash method
-    const currentLang = lang === 'en' ? '' : lang;
-    if (currentLang) {
-      // Set cookie
-      document.cookie = `googtrans=/en/${currentLang}; path=/`;
-      document.cookie = `googtrans=/en/${currentLang}; path=/; domain=${window.location.hostname}`;
-      // Reload page
-      window.location.reload();
-    } else {
-      // Reset to English
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
-      window.location.reload();
-    }
+    // Wait a bit for Google Translate to be ready
+    setTimeout(() => {
+      if (window.translatePage) {
+        window.translatePage(lang);
+      }
+    }, 300);
   };
 
   const scrollPrev = useCallback(() => {
