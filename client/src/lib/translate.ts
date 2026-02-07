@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://www.sunson-tech.com/api';
+const LIBRE_TRANSLATE_API = 'https://libretranslate.com/translate';
 
 const langMap: Record<string, string> = {
   'en': 'en', 'es': 'es', 'fr': 'fr', 'de': 'de', 'it': 'it', 'pt': 'pt',
@@ -25,12 +25,14 @@ export const translatePage = async (targetLang: string) => {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/translate`, {
+      const response = await fetch(LIBRE_TRANSLATE_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: originalText,
-          targetLang: langMap[targetLang] || targetLang
+          q: originalText,
+          source: 'en',
+          target: langMap[targetLang] || targetLang,
+          format: 'text'
         })
       });
       
