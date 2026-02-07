@@ -82,15 +82,26 @@ export default function HeroCarousel() {
   const handleLanguageChange = (lang: string) => {
     if (!lang) return;
     
-    // Find the Google Translate select element
+    // Method 1: Try to find and trigger the hidden Google Translate select
     const frame = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (frame) {
       frame.value = lang;
-      frame.dispatchEvent(new Event('change'));
+      frame.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+    
+    // Method 2: Use URL hash method
+    const currentLang = lang === 'en' ? '' : lang;
+    if (currentLang) {
+      // Set cookie
+      document.cookie = `googtrans=/en/${currentLang}; path=/`;
+      document.cookie = `googtrans=/en/${currentLang}; path=/; domain=${window.location.hostname}`;
+      // Reload page
+      window.location.reload();
     } else {
-      // If frame not found, reload with language parameter
-      const currentUrl = window.location.href.split('#')[0].split('?')[0];
-      window.location.href = currentUrl + '#googtrans(en|' + lang + ')';
+      // Reset to English
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
       window.location.reload();
     }
   };
