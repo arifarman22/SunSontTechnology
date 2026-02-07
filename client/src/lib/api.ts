@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.sunson-tech.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://www.sunson-tech.com/api';
 
 export interface Product {
   id: string;
