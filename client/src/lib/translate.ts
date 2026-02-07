@@ -34,6 +34,11 @@ export const translatePage = async (targetLang: string) => {
         })
       });
       
+      if (!response.ok) {
+        console.error('Translation API error:', response.status);
+        continue;
+      }
+      
       const data = await response.json();
       if (data.translatedText) {
         element.textContent = data.translatedText;
