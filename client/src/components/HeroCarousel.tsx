@@ -71,21 +71,17 @@ export default function HeroCarousel() {
   }, []);
 
   const handleLanguageChange = (lang: string) => {
-    if (!lang) return;
-    
-    console.log('Attempting to translate to:', lang);
-    
-    // Try immediately
-    if (window.translatePage) {
-      window.translatePage(lang);
-    } else {
-      // If function not available, wait and try again
-      setTimeout(() => {
-        if (window.translatePage) {
-          window.translatePage(lang);
-        }
-      }, 1000);
+    if (!lang || lang === 'en') {
+      // Reload to English (remove translation)
+      const baseUrl = window.location.origin + window.location.pathname;
+      window.location.href = baseUrl;
+      return;
     }
+    
+    // Redirect to Google Translate URL
+    const currentUrl = window.location.href;
+    const translateUrl = `https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(currentUrl)}`;
+    window.location.href = translateUrl;
   };
 
   const scrollPrev = useCallback(() => {
