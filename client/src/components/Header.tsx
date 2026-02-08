@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { ChevronDown, Menu, X, Globe, Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import Logo from "../images/Logo.jpeg";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,14 +33,8 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" data-testid="link-home">
-            <div className="flex items-center space-x-2 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#049fd9] rounded flex items-center justify-center group-hover:bg-[#00bceb] transition-colors">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-[#1d1d1d] tracking-tight">SUNSON</span>
-                <span className="text-[10px] text-gray-600 -mt-1">TECHNOLOGY</span>
-              </div>
+            <div className="flex items-center cursor-pointer">
+              <img src={Logo} alt="Sunson Technology" className="h-12 w-auto" />
             </div>
           </Link>
 
