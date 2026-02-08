@@ -3,6 +3,21 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint
+  app.get("/", (req, res) => {
+    res.json({ 
+      status: "ok", 
+      message: "Sunson Technology API Server",
+      endpoints: [
+        "/api/products",
+        "/api/solutions",
+        "/api/hero-slides",
+        "/api/news",
+        "/api/company-info"
+      ]
+    });
+  });
+
   // Products API
   app.get("/api/products", async (req, res) => {
     const products = await storage.getProducts();
