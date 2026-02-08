@@ -1,8 +1,40 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { storage } from '../server/storage';
 import bcrypt from 'bcryptjs';
-import { authMiddleware, adminOnly, generateToken, type AuthRequest } from '../server/auth';
+import jwt from 'jsonwebtoken';
+import { neon } from '@neondatabase/serverless';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'sunson_tech_secret_2024';
+
+interface AuthRequest extends Request {
+  userId?: string;
+  userRole?: string;
+}
+
+const authMiddleware = (req: AuthRequest, res: Response, next: Function) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ message: 'Authentication required' });
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
+    req.userId = decoded.userId;
+    req.userRole = decoded.role;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+const adminOnly = (req: AuthRequest, res: Response, next: Function) => {
+  if (req.userRole !== 'admin') return res.status(403).json({ message: 'Admin access required' });
+  next();
+};
+
+const generateToken = (userId: string, role: string): string => {
+  return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: '7d' });
+};
+
+const sql = neon(process.env.DATABASE_URL!);
 
 const app = express();
 app.use(cors());
@@ -15,97 +47,195 @@ app.get('/api', (req, res) => {
 
 // Auth routes
 app.post('/api/auth/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await storage.getUserByUsername(username);
-  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-  
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return res.status(401).json({ message: 'Invalid credentials' });
-  
-  const token = generateToken(user.id, user.role);
-  res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+  try {
+    const { username, password } = req.body;
+    const users = await sql`SELECT * FROM users WHERE username = ${username} LIMIT 1`;
+    if (users.length === 0) return res.status(401).json({ message: 'Invalid credentials' });
+    
+    const user = users[0];
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) return res.status(401).json({ message: 'Invalid credentials' });
+    
+    const token = generateToken(user.id, user.role);
+    res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Products routes
 app.get('/api/products', async (req, res) => {
-  const products = await storage.getProducts();
-  res.json(products);
+  try {
+    const products = await sql`SELECT * FROM products ORDER BY title`;
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/api/products', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const product = await storage.createProduct(req.body);
-  res.status(201).json(product);
+  try {
+    const { title, description, category, image, features, specifications } = req.body;
+    const result = await sql`
+      INSERT INTO products (title, description, category, image, features, specifications)
+      VALUES (${title}, ${description}, ${category}, ${image}, ${JSON.stringify(features || [])}, ${JSON.stringify(specifications || {})})
+      RETURNING *
+    `;
+    res.status(201).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.put('/api/products/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const product = await storage.updateProduct(req.params.id, req.body);
-  if (!product) return res.status(404).json({ message: 'Product not found' });
-  res.json(product);
+  try {
+    const { title, description, category, image, features, specifications } = req.body;
+    const result = await sql`
+      UPDATE products
+      SET title = ${title}, description = ${description}, category = ${category},
+          image = ${image}, features = ${JSON.stringify(features || [])},
+          specifications = ${JSON.stringify(specifications || {})}
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    if (result.length === 0) return res.status(404).json({ message: 'Product not found' });
+    res.json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.delete('/api/products/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const deleted = await storage.deleteProduct(req.params.id);
-  if (!deleted) return res.status(404).json({ message: 'Product not found' });
-  res.status(204).send();
+  try {
+    const result = await sql`DELETE FROM products WHERE id = ${req.params.id} RETURNING id`;
+    if (result.length === 0) return res.status(404).json({ message: 'Product not found' });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Solutions routes
 app.get('/api/solutions', async (req, res) => {
-  const solutions = await storage.getSolutions();
-  res.json(solutions);
+  try {
+    const solutions = await sql`SELECT * FROM solutions ORDER BY title`;
+    res.json(solutions);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/api/solutions', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const solution = await storage.createSolution(req.body);
-  res.status(201).json(solution);
+  try {
+    const { title, description, image, features, benefits } = req.body;
+    const result = await sql`
+      INSERT INTO solutions (title, description, image, features, benefits)
+      VALUES (${title}, ${description}, ${image}, ${JSON.stringify(features || [])}, ${JSON.stringify(benefits || [])})
+      RETURNING *
+    `;
+    res.status(201).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.put('/api/solutions/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const solution = await storage.updateSolution(req.params.id, req.body);
-  if (!solution) return res.status(404).json({ message: 'Solution not found' });
-  res.json(solution);
+  try {
+    const { title, description, image, features, benefits } = req.body;
+    const result = await sql`
+      UPDATE solutions
+      SET title = ${title}, description = ${description}, image = ${image},
+          features = ${JSON.stringify(features || [])}, benefits = ${JSON.stringify(benefits || [])}
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    if (result.length === 0) return res.status(404).json({ message: 'Solution not found' });
+    res.json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.delete('/api/solutions/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const deleted = await storage.deleteSolution(req.params.id);
-  if (!deleted) return res.status(404).json({ message: 'Solution not found' });
-  res.status(204).send();
+  try {
+    const result = await sql`DELETE FROM solutions WHERE id = ${req.params.id} RETURNING id`;
+    if (result.length === 0) return res.status(404).json({ message: 'Solution not found' });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // News routes
 app.get('/api/news', async (req, res) => {
-  const posts = await storage.getNewsPosts();
-  res.json(posts);
+  try {
+    const posts = await sql`SELECT * FROM news_posts ORDER BY date DESC`;
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/api/news', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const post = await storage.createNewsPost(req.body);
-  res.status(201).json(post);
+  try {
+    const { title, content, image, date, author } = req.body;
+    const result = await sql`
+      INSERT INTO news_posts (title, content, image, date, author)
+      VALUES (${title}, ${content}, ${image}, ${date}, ${author})
+      RETURNING *
+    `;
+    res.status(201).json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.put('/api/news/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const post = await storage.updateNewsPost(req.params.id, req.body);
-  if (!post) return res.status(404).json({ message: 'News post not found' });
-  res.json(post);
+  try {
+    const { title, content, image, date, author } = req.body;
+    const result = await sql`
+      UPDATE news_posts
+      SET title = ${title}, content = ${content}, image = ${image}, date = ${date}, author = ${author}
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    if (result.length === 0) return res.status(404).json({ message: 'News post not found' });
+    res.json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.delete('/api/news/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
-  const deleted = await storage.deleteNewsPost(req.params.id);
-  if (!deleted) return res.status(404).json({ message: 'News post not found' });
-  res.status(204).send();
+  try {
+    const result = await sql`DELETE FROM news_posts WHERE id = ${req.params.id} RETURNING id`;
+    if (result.length === 0) return res.status(404).json({ message: 'News post not found' });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Hero slides routes
 app.get('/api/hero-slides', async (req, res) => {
-  const slides = await storage.getHeroSlides();
-  res.json(slides);
+  try {
+    const slides = await sql`SELECT * FROM hero_slides ORDER BY id`;
+    res.json(slides);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Company info routes
 app.get('/api/company-info', async (req, res) => {
-  const info = await storage.getCompanyInfo();
-  if (!info) return res.status(404).json({ message: 'Company info not found' });
-  res.json(info);
+  try {
+    const info = await sql`SELECT * FROM company_info LIMIT 1`;
+    if (info.length === 0) return res.status(404).json({ message: 'Company info not found' });
+    res.json(info[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
+
 
 export default app;
