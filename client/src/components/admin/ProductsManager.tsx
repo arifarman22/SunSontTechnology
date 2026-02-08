@@ -113,7 +113,20 @@ export default function ProductsManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input placeholder="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <Textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required />
-              <Input placeholder="Category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} required />
+              <select 
+                className="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                value={formData.category} 
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })} 
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="Banking">Banking</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="EPP">EPP</option>
+                <option value="Retail">Retail</option>
+                <option value="Payments">Payments</option>
+                <option value="Other">Other</option>
+              </select>
               <div>
                 <label className="block text-sm font-medium mb-2">Upload Image</label>
                 <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
@@ -134,7 +147,8 @@ export default function ProductsManager() {
               <CardTitle>{product.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 mb-4">{product.description}</p>
+              <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+              <p className="text-xs text-gray-500 mb-4">Category: <span className="font-semibold">{product.category}</span></p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => handleEdit(product)}>Edit</Button>
                 <Button size="sm" variant="destructive" onClick={() => handleDelete(product.id)}>Delete</Button>
