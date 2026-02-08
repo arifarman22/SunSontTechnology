@@ -11,11 +11,16 @@ export default function News() {
   useEffect(() => {
     getNewsPosts()
       .then(data => {
-        if (data && data.length > 0) {
+        if (Array.isArray(data) && data.length > 0) {
           setNews(data);
+        } else {
+          setNews([]);
         }
       })
-      .catch(err => console.error('Failed to fetch news:', err))
+      .catch(err => {
+        console.error('Failed to fetch news:', err);
+        setNews([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
