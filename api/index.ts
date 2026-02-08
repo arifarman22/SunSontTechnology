@@ -49,6 +49,11 @@ app.get('/api', (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    
+    if (!process.env.DATABASE_URL) {
+      return res.status(500).json({ message: 'Database not configured' });
+    }
+    
     const users = await sql`SELECT * FROM users WHERE username = ${username} LIMIT 1`;
     if (users.length === 0) return res.status(401).json({ message: 'Invalid credentials' });
     
@@ -58,8 +63,9 @@ app.post('/api/auth/login', async (req, res) => {
     
     const token = generateToken(user.id, user.role);
     res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
