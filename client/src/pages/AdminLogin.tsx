@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const API_BASE_URL = 'https://sunsontechnology-backend.onrender.com/api';
+const API_BASE_URL = 'https://www.sunson-tech.com/api';
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();

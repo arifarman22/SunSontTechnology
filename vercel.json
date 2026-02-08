@@ -2,9 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "env": {
-    "VITE_API_URL": "https://sunsontechnology-backend.onrender.com/api"
+    "VITE_API_URL": "https://www.sunson-tech.com/api",
+    "DATABASE_URL": "@database_url"
   }
 }

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import type { Solution } from '@/lib/api';
 
-const API_BASE_URL = 'https://sunsontechnology-backend.onrender.com/api';
+const API_BASE_URL = 'https://www.sunson-tech.com/api';
 
 export default function SolutionsManager() {
   const [solutions, setSolutions] = useState<Solution[]>([]);
