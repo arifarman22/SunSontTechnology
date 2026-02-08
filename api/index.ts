@@ -218,15 +218,18 @@ app.delete('/api/solutions/:id', authMiddleware, adminOnly, async (req: AuthRequ
 // News routes
 app.get('/api/news', async (req, res) => {
   try {
+    await ensureTablesExist();
     const posts = await sql`SELECT * FROM news_posts ORDER BY date DESC`;
     res.json(posts);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('News fetch error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
 app.post('/api/news', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
+    await ensureTablesExist();
     const { title, content, image, date, author } = req.body;
     const result = await sql`
       INSERT INTO news_posts (title, content, image, date, author)
@@ -234,8 +237,9 @@ app.post('/api/news', authMiddleware, adminOnly, async (req: AuthRequest, res) =
       RETURNING *
     `;
     res.status(201).json(result[0]);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('News creation error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

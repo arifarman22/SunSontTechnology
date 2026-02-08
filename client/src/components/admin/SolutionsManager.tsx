@@ -15,7 +15,6 @@ export default function SolutionsManager() {
   const [formData, setFormData] = useState({ title: '', description: '', image: '', features: [] as string[], benefits: [] as string[] });
   const [newFeature, setNewFeature] = useState('');
   const [newBenefit, setNewBenefit] = useState('');
-  const [uploading, setUploading] = useState(false);
 
   const fetchSolutions = async () => {
     try {
@@ -33,30 +32,6 @@ export default function SolutionsManager() {
     fetchSolutions();
   }, []);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/upload`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData,
-      });
-      const data = await res.json();
-      setFormData(prev => ({ ...prev, image: `https://www.sunson-tech.com${data.url}` }));
-    } catch (error) {
-      alert('Image upload failed');
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
@@ -64,21 +39,30 @@ export default function SolutionsManager() {
     const url = editing ? `${API_BASE_URL}/solutions/${editing.id}` : `${API_BASE_URL}/solutions`;
     const method = editing ? 'PUT' : 'POST';
 
-    const payload = formData;
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-    await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+      if (!res.ok) {
+        const error = await res.json();
+        alert(`Error: ${error.message || 'Failed to save solution'}`);
+        return;
+      }
 
-    setOpen(false);
-    setEditing(null);
-    setFormData({ title: '', description: '', image: '', features: [], benefits: [] });
-    fetchSolutions();
+      setOpen(false);
+      setEditing(null);
+      setFormData({ title: '', description: '', image: '', features: [], benefits: [] });
+      fetchSolutions();
+    } catch (error) {
+      console.error('Submit error:', error);
+      alert('Failed to save solution');
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -109,13 +93,8 @@ export default function SolutionsManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input placeholder="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <Textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required />
-              <div>
-                <label className="block text-sm font-medium mb-2">Upload Image</label>
-                <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
-                {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
-                {formData.image && <img src={formData.image} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />}
-              </div>
-              <Input placeholder="Or paste image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
+              <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
+              {formData.image && <img src={formData.image} alt="Preview" className="w-32 h-32 object-cover rounded" />}
               
               <div className="space-y-2">
                 <label className="text-sm font-medium">Features</label>
