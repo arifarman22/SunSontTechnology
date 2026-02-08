@@ -113,6 +113,7 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
+    await ensureTablesExist();
     const { title, description, category, image, features, specifications } = req.body;
     const result = await sql`
       INSERT INTO products (title, description, category, image, features, specifications)
@@ -157,6 +158,7 @@ app.delete('/api/products/:id', authMiddleware, adminOnly, async (req: AuthReque
 // Solutions routes
 app.get('/api/solutions', async (req, res) => {
   try {
+    await ensureTablesExist();
     const solutions = await sql`SELECT * FROM solutions ORDER BY title`;
     const parsed = solutions.map(s => ({
       ...s,
@@ -164,13 +166,15 @@ app.get('/api/solutions', async (req, res) => {
       benefits: typeof s.benefits === 'string' ? JSON.parse(s.benefits) : s.benefits
     }));
     res.json(parsed);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Solutions fetch error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
 app.post('/api/solutions', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
+    await ensureTablesExist();
     const { title, description, image, features, benefits } = req.body;
     const result = await sql`
       INSERT INTO solutions (title, description, image, features, benefits)
@@ -178,8 +182,9 @@ app.post('/api/solutions', authMiddleware, adminOnly, async (req: AuthRequest, r
       RETURNING *
     `;
     res.status(201).json(result[0]);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Solution creation error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
