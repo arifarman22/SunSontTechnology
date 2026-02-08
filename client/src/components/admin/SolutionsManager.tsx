@@ -62,13 +62,19 @@ export default function SolutionsManager() {
     const url = editing ? `${API_BASE_URL}/solutions/${editing.id}` : `${API_BASE_URL}/solutions`;
     const method = editing ? 'PUT' : 'POST';
 
+    const payload = {
+      ...formData,
+      features: [],
+      benefits: []
+    };
+
     await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(payload),
     });
 
     setOpen(false);

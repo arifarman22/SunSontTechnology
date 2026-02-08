@@ -40,13 +40,19 @@ export default function ProductsManager() {
     
     const method = editingProduct ? 'PUT' : 'POST';
 
+    const payload = {
+      ...formData,
+      features: [],
+      specifications: {}
+    };
+
     await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(payload),
     });
 
     setOpen(false);

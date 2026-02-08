@@ -1,43 +1,70 @@
 import { useState, useEffect } from 'react';
-import { Link } from "wouter";
+import { Link, useParams } from "wouter";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { getProducts, type Product } from "@/lib/api";
 
-export default function BankingProducts() {
+const categoryInfo: Record<string, { title: string; description: string }> = {
+  Banking: {
+    title: "Banking Solutions",
+    description: "Comprehensive self-service banking solutions for modern financial institutions."
+  },
+  Healthcare: {
+    title: "Healthcare Kiosks",
+    description: "Self-service check-in and patient management systems for healthcare facilities."
+  },
+  EPP: {
+    title: "EPP Security Solutions",
+    description: "PCI-certified encryption pin pads and secure payment hardware."
+  },
+  Retail: {
+    title: "Retail Solutions",
+    description: "Self-service kiosks and payment terminals for retail environments."
+  },
+  Payments: {
+    title: "Payment Solutions",
+    description: "Versatile payment kiosks for cryptocurrency, cash, and card transactions."
+  },
+  Other: {
+    title: "Other Solutions",
+    description: "Additional self-service technology solutions for various industries."
+  }
+};
+
+export default function CategoryProducts() {
+  const params = useParams();
+  const category = params.category || 'Banking';
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+  const info = categoryInfo[categoryName] || categoryInfo.Banking;
 
   useEffect(() => {
     getProducts()
       .then(data => {
-        const bankingProducts = data.filter(p => p.category === 'Banking');
-        setProducts(bankingProducts);
+        const filtered = data.filter(p => p.category === categoryName);
+        setProducts(filtered);
       })
       .catch(err => console.error('Failed to fetch products:', err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [categoryName]);
 
   return (
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Hero Section */}
       <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <div className="text-sm font-semibold mb-4 uppercase tracking-wider opacity-90">Products</div>
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6">Banking Solutions</h1>
-            <p className="text-xl opacity-90 mb-8">
-              Comprehensive self-service banking solutions for modern financial institutions. 
-              Our secure and reliable systems enhance customer experience while reducing operational costs.
-            </p>
+            <h1 className="text-5xl lg:text-6xl font-bold mb-6">{info.title}</h1>
+            <p className="text-xl opacity-90 mb-8">{info.description}</p>
           </div>
         </div>
       </section>
 
-      {/* Products Grid */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           {loading ? (
@@ -47,7 +74,7 @@ export default function BankingProducts() {
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-600 text-lg">No banking products available at the moment.</p>
+              <p className="text-gray-600 text-lg">No products available in this category yet.</p>
             </div>
           ) : (
             <div className="grid lg:grid-cols-3 gap-6">
@@ -83,11 +110,9 @@ export default function BankingProducts() {
                       </div>
                     )}
                     
-                    <Link href={`/products/banking/${product.id}`} className="w-full">
-                      <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
-                        View Details
-                      </Button>
-                    </Link>
+                    <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
+                      View Details
+                    </Button>
                   </div>
                 </div>
               ))}
