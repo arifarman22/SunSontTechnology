@@ -3,8 +3,33 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { neon } from '@neondatabase/serverless';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sunson_tech_secret_2024';
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: path.join(__dirname, '../uploads'),
+    filename: (req, file, cb) => {
+      const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(7)}${path.extname(file.originalname)}`;
+      cb(null, uniqueName);
+    }
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    if (ext && mime) cb(null, true);
+    else cb(new Error('Only images allowed'));
+  }
+});
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -39,10 +64,17 @@ const sql = neon(process.env.DATABASE_URL!);
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check
 app.get('/api', (req, res) => {
   res.json({ status: 'ok', message: 'Sunson Technology API' });
+});
+
+// Upload endpoint
+app.post('/api/upload', authMiddleware, adminOnly, upload.single('file'), (req: AuthRequest, res) => {
+  if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+  res.json({ url: `/uploads/${req.file.filename}` });
 });
 
 // Auth routes

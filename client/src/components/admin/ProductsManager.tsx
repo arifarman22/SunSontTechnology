@@ -47,7 +47,7 @@ export default function ProductsManager() {
         body: formData,
       });
       const data = await res.json();
-      setFormData(prev => ({ ...prev, image: `https://sunsontechnology-backend.onrender.com${data.url}` }));
+      setFormData(prev => ({ ...prev, image: `https://www.sunson-tech.com${data.url}` }));
     } catch (error) {
       alert('Image upload failed');
     } finally {
@@ -133,13 +133,8 @@ export default function ProductsManager() {
                 <option value="Payments">Payments</option>
                 <option value="Other">Other</option>
               </select>
-              <div>
-                <label className="block text-sm font-medium mb-2">Upload Image</label>
-                <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
-                {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
-                {formData.image && <img src={formData.image} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />}
-              </div>
-              <Input placeholder="Or paste image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
+              <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
+              {formData.image && <img src={formData.image} alt="Preview" className="w-32 h-32 object-cover rounded" />}
               <Button type="submit" className="w-full">Save</Button>
             </form>
           </DialogContent>

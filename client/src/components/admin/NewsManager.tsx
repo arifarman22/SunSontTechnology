@@ -47,7 +47,7 @@ export default function NewsManager() {
         body: formData,
       });
       const data = await res.json();
-      setFormData(prev => ({ ...prev, image: `https://sunsontechnology-backend.onrender.com${data.url}` }));
+      setFormData(prev => ({ ...prev, image: `https://www.sunson-tech.com${data.url}` }));
     } catch (error) {
       alert('Image upload failed');
     } finally {
