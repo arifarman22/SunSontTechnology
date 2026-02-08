@@ -45,19 +45,31 @@ export default function ProductsManager() {
 
     const payload = formData;
 
-    await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    setOpen(false);
-    setEditingProduct(null);
-    setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} });
-    fetchProducts();
+      if (!res.ok) {
+        const error = await res.json();
+        console.error('API Error:', error);
+        alert(`Error: ${error.message || 'Failed to save product'}`);
+        return;
+      }
+
+      setOpen(false);
+      setEditingProduct(null);
+      setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} });
+      fetchProducts();
+    } catch (error) {
+      console.error('Submit error:', error);
+      alert('Failed to save product. Check console for details.');
+    }
   };
 
   const handleDelete = async (id: string) => {
