@@ -206,6 +206,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ id: user.id, username: user.username, role: user.role });
   });
 
+  // Debug endpoint
+  app.get("/api/debug/storage", async (req, res) => {
+    const hasDb = !!process.env.DATABASE_URL;
+    const user = await storage.getUserByUsername('SunsonTech');
+    res.json({ 
+      hasDatabase: hasDb, 
+      userExists: !!user,
+      username: user?.username,
+      hasPassword: !!user?.password
+    });
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
