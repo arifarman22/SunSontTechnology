@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Globe } from "lucide-react";
 import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -49,6 +49,27 @@ const slides = [
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  ];
+
+  const changeLanguage = (langCode: string) => {
+    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (select) {
+      select.value = langCode;
+      select.dispatchEvent(new Event('change'));
+    }
+    setShowLangMenu(false);
+  };
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -84,11 +105,36 @@ export default function HeroCarousel() {
 
   return (
     <section className="relative h-[600px] mt-[104px] overflow-hidden">
-      {/* Language Selector */}
+      {/* Hidden Google Translate Element */}
+      <div id="google_translate_element" style={{ display: 'none' }}></div>
+      
+      {/* Custom Language Selector */}
       <div className="absolute top-6 right-6 z-50">
-        <div id="google_translate_element"></div>
+        <div className="relative">
+          <button
+            onClick={() => setShowLangMenu(!showLangMenu)}
+            className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-[#049fd9] rounded-lg hover:bg-[#f0f9ff] transition-all shadow-lg"
+          >
+            <Globe className="h-5 w-5 text-[#049fd9]" />
+            <span className="font-medium text-gray-700">Language</span>
+          </button>
+          
+          {showLangMenu && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-[#049fd9] rounded-lg shadow-xl max-h-80 overflow-y-auto">
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className="w-full px-4 py-2 text-left hover:bg-[#f0f9ff] flex items-center space-x-2 transition-colors"
+                >
+                  <span>{lang.flag}</span>
+                  <span className="text-gray-700">{lang.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex h-[600px]">
           {slides.map((slide) => (
