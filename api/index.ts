@@ -34,7 +34,11 @@ const generateToken = (userId: string, role: string): string => {
   return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: '7d' });
 };
 
-const sql = neon(process.env.DATABASE_URL!);
+if (!process.env.DATABASE_URL) {
+  console.error('FATAL: DATABASE_URL environment variable is not set');
+}
+
+const sql = neon(process.env.DATABASE_URL || '');
 
 const app = express();
 app.use(cors());
@@ -72,6 +76,11 @@ app.post('/api/auth/login', async (req, res) => {
 // Products routes
 app.get('/api/products', async (req, res) => {
   try {
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL not configured');
+      return res.status(500).json({ message: 'Database not configured' });
+    }
+    
     const products = await sql`SELECT * FROM products ORDER BY title`;
     const parsed = products.map(p => ({
       ...p,
@@ -79,8 +88,9 @@ app.get('/api/products', async (req, res) => {
       specifications: typeof p.specifications === 'string' ? JSON.parse(p.specifications) : p.specifications
     }));
     res.json(parsed);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Products fetch error:', error.message, error.stack);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
