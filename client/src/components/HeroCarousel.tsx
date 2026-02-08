@@ -75,12 +75,19 @@ export default function HeroCarousel() {
   ];
 
   const changeLanguage = (langCode: string) => {
-    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (select) {
-      select.value = langCode;
-      select.dispatchEvent(new Event('change'));
-    }
-    setShowLangMenu(false);
+    // Wait for Google Translate to load
+    const checkAndTranslate = () => {
+      const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (select) {
+        select.value = langCode;
+        select.dispatchEvent(new Event('change'));
+        setShowLangMenu(false);
+      } else {
+        // Retry after 100ms if not loaded yet
+        setTimeout(checkAndTranslate, 100);
+      }
+    };
+    checkAndTranslate();
   };
 
   const scrollPrev = useCallback(() => {
