@@ -48,29 +48,27 @@ export class DbStorage implements IStorage {
   }
 
   async updateProduct(id: string, product: Partial<Product>): Promise<Product | undefined> {
-    const updates: string[] = [];
-    const values: any[] = [];
+    const existing = await this.getProduct(id);
+    if (!existing) return undefined;
     
-    if (product.title) { updates.push('title = $' + (values.length + 1)); values.push(product.title); }
-    if (product.description) { updates.push('description = $' + (values.length + 1)); values.push(product.description); }
-    if (product.category) { updates.push('category = $' + (values.length + 1)); values.push(product.category); }
-    if (product.image) { updates.push('image = $' + (values.length + 1)); values.push(product.image); }
-    if (product.features) { updates.push('features = $' + (values.length + 1)); values.push(JSON.stringify(product.features)); }
-    if (product.specifications) { updates.push('specifications = $' + (values.length + 1)); values.push(JSON.stringify(product.specifications)); }
-    
-    if (updates.length === 0) return this.getProduct(id);
-    
-    const [updated] = await sql`
-      UPDATE products SET ${sql.unsafe(updates.join(', '))}
+    const updated = { ...existing, ...product };
+    const [result] = await sql`
+      UPDATE products 
+      SET title = ${updated.title}, 
+          description = ${updated.description}, 
+          category = ${updated.category}, 
+          image = ${updated.image}, 
+          features = ${JSON.stringify(updated.features || [])}, 
+          specifications = ${JSON.stringify(updated.specifications || {})}
       WHERE id = ${id}
       RETURNING *
     `;
-    return updated as Product | undefined;
+    return result as Product | undefined;
   }
 
   async deleteProduct(id: string): Promise<boolean> {
     const result = await sql`DELETE FROM products WHERE id = ${id}`;
-    return result.count > 0;
+    return result.length > 0;
   }
 
   async getSolutions(): Promise<Solution[]> {
@@ -95,28 +93,26 @@ export class DbStorage implements IStorage {
   }
 
   async updateSolution(id: string, solution: Partial<Solution>): Promise<Solution | undefined> {
-    const updates: string[] = [];
-    const values: any[] = [];
+    const existing = await this.getSolution(id);
+    if (!existing) return undefined;
     
-    if (solution.title) { updates.push('title = $' + (values.length + 1)); values.push(solution.title); }
-    if (solution.description) { updates.push('description = $' + (values.length + 1)); values.push(solution.description); }
-    if (solution.image) { updates.push('image = $' + (values.length + 1)); values.push(solution.image); }
-    if (solution.features) { updates.push('features = $' + (values.length + 1)); values.push(JSON.stringify(solution.features)); }
-    if (solution.benefits) { updates.push('benefits = $' + (values.length + 1)); values.push(JSON.stringify(solution.benefits)); }
-    
-    if (updates.length === 0) return this.getSolution(id);
-    
-    const [updated] = await sql`
-      UPDATE solutions SET ${sql.unsafe(updates.join(', '))}
+    const updated = { ...existing, ...solution };
+    const [result] = await sql`
+      UPDATE solutions 
+      SET title = ${updated.title}, 
+          description = ${updated.description}, 
+          image = ${updated.image}, 
+          features = ${JSON.stringify(updated.features || [])}, 
+          benefits = ${JSON.stringify(updated.benefits || [])}
       WHERE id = ${id}
       RETURNING *
     `;
-    return updated as Solution | undefined;
+    return result as Solution | undefined;
   }
 
   async deleteSolution(id: string): Promise<boolean> {
     const result = await sql`DELETE FROM solutions WHERE id = ${id}`;
-    return result.count > 0;
+    return result.length > 0;
   }
 
   async getHeroSlides(): Promise<HeroSlide[]> {
@@ -141,29 +137,27 @@ export class DbStorage implements IStorage {
   }
 
   async updateHeroSlide(id: string, slide: Partial<HeroSlide>): Promise<HeroSlide | undefined> {
-    const updates: string[] = [];
-    const values: any[] = [];
+    const existing = await this.getHeroSlide(id);
+    if (!existing) return undefined;
     
-    if (slide.title) { updates.push('title = $' + (values.length + 1)); values.push(slide.title); }
-    if (slide.subtitle) { updates.push('subtitle = $' + (values.length + 1)); values.push(slide.subtitle); }
-    if (slide.description) { updates.push('description = $' + (values.length + 1)); values.push(slide.description); }
-    if (slide.image) { updates.push('image = $' + (values.length + 1)); values.push(slide.image); }
-    if (slide.cta) { updates.push('cta = $' + (values.length + 1)); values.push(slide.cta); }
-    if (slide.theme) { updates.push('theme = $' + (values.length + 1)); values.push(slide.theme); }
-    
-    if (updates.length === 0) return this.getHeroSlide(id);
-    
-    const [updated] = await sql`
-      UPDATE hero_slides SET ${sql.unsafe(updates.join(', '))}
+    const updated = { ...existing, ...slide };
+    const [result] = await sql`
+      UPDATE hero_slides 
+      SET title = ${updated.title}, 
+          subtitle = ${updated.subtitle}, 
+          description = ${updated.description}, 
+          image = ${updated.image}, 
+          cta = ${updated.cta}, 
+          theme = ${updated.theme}
       WHERE id = ${id}
       RETURNING *
     `;
-    return updated as HeroSlide | undefined;
+    return result as HeroSlide | undefined;
   }
 
   async deleteHeroSlide(id: string): Promise<boolean> {
     const result = await sql`DELETE FROM hero_slides WHERE id = ${id}`;
-    return result.count > 0;
+    return result.length > 0;
   }
 
   async getNewsPosts(): Promise<NewsPost[]> {
@@ -187,28 +181,26 @@ export class DbStorage implements IStorage {
   }
 
   async updateNewsPost(id: string, post: Partial<NewsPost>): Promise<NewsPost | undefined> {
-    const updates: string[] = [];
-    const values: any[] = [];
+    const existing = await this.getNewsPost(id);
+    if (!existing) return undefined;
     
-    if (post.title) { updates.push('title = $' + (values.length + 1)); values.push(post.title); }
-    if (post.content) { updates.push('content = $' + (values.length + 1)); values.push(post.content); }
-    if (post.image) { updates.push('image = $' + (values.length + 1)); values.push(post.image); }
-    if (post.date) { updates.push('date = $' + (values.length + 1)); values.push(post.date); }
-    if (post.author) { updates.push('author = $' + (values.length + 1)); values.push(post.author); }
-    
-    if (updates.length === 0) return this.getNewsPost(id);
-    
-    const [updated] = await sql`
-      UPDATE news_posts SET ${sql.unsafe(updates.join(', '))}
+    const updated = { ...existing, ...post };
+    const [result] = await sql`
+      UPDATE news_posts 
+      SET title = ${updated.title}, 
+          content = ${updated.content}, 
+          image = ${updated.image}, 
+          date = ${updated.date}, 
+          author = ${updated.author}
       WHERE id = ${id}
       RETURNING *
     `;
-    return updated as NewsPost | undefined;
+    return result as NewsPost | undefined;
   }
 
   async deleteNewsPost(id: string): Promise<boolean> {
     const result = await sql`DELETE FROM news_posts WHERE id = ${id}`;
-    return result.count > 0;
+    return result.length > 0;
   }
 
   async getCompanyInfo(): Promise<CompanyInfo | undefined> {
