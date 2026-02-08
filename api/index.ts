@@ -73,7 +73,12 @@ app.post('/api/auth/login', async (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     const products = await sql`SELECT * FROM products ORDER BY title`;
-    res.json(products);
+    const parsed = products.map(p => ({
+      ...p,
+      features: typeof p.features === 'string' ? JSON.parse(p.features) : p.features,
+      specifications: typeof p.specifications === 'string' ? JSON.parse(p.specifications) : p.specifications
+    }));
+    res.json(parsed);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -125,7 +130,12 @@ app.delete('/api/products/:id', authMiddleware, adminOnly, async (req: AuthReque
 app.get('/api/solutions', async (req, res) => {
   try {
     const solutions = await sql`SELECT * FROM solutions ORDER BY title`;
-    res.json(solutions);
+    const parsed = solutions.map(s => ({
+      ...s,
+      features: typeof s.features === 'string' ? JSON.parse(s.features) : s.features,
+      benefits: typeof s.benefits === 'string' ? JSON.parse(s.benefits) : s.benefits
+    }));
+    res.json(parsed);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

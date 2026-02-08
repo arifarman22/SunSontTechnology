@@ -1,5 +1,8 @@
 import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcryptjs';
+import { config } from 'dotenv';
+
+config();
 
 const sql = neon(process.env.DATABASE_URL!);
 
