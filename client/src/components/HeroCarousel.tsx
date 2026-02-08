@@ -56,10 +56,22 @@ export default function HeroCarousel() {
     { code: 'es', name: 'Español', flag: '🇪🇸' },
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
     { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },
     { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+    { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+    { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
+    { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'th', name: 'ไทย', flag: '🇹🇭' },
+    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+    { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+    { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
   ];
 
   const changeLanguage = (langCode: string) => {
@@ -113,21 +125,24 @@ export default function HeroCarousel() {
         <div className="relative">
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
-            className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-[#049fd9] rounded-lg hover:bg-[#f0f9ff] transition-all shadow-lg"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-white/95 backdrop-blur-sm border border-gray-300 rounded-md hover:border-[#049fd9] hover:bg-white transition-all shadow-sm text-sm font-medium text-gray-700"
           >
-            <Globe className="h-5 w-5 text-[#049fd9]" />
-            <span className="font-medium text-gray-700">Language</span>
+            <Globe className="h-4 w-4 text-gray-600" />
+            <span>Translate</span>
+            <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
           
           {showLangMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-[#049fd9] rounded-lg shadow-xl max-h-80 overflow-y-auto">
+            <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto">
               {languages.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className="w-full px-4 py-2 text-left hover:bg-[#f0f9ff] flex items-center space-x-2 transition-colors"
+                  className="w-full px-4 py-2.5 text-left hover:bg-gray-50 flex items-center space-x-3 transition-colors text-sm border-b border-gray-100 last:border-b-0"
                 >
-                  <span>{lang.flag}</span>
+                  <span className="text-lg">{lang.flag}</span>
                   <span className="text-gray-700">{lang.name}</span>
                 </button>
               ))}
