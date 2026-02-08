@@ -120,8 +120,9 @@ app.post('/api/products', authMiddleware, adminOnly, async (req: AuthRequest, re
       RETURNING *
     `;
     res.status(201).json(result[0]);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error: any) {
+    console.error('Product creation error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
