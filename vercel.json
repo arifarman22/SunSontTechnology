@@ -3,5 +3,8 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
-  ]
+  ],
+  "env": {
+    "VITE_API_URL": "https://sunsontechnology-backend.onrender.com/api"
+  }
 }
