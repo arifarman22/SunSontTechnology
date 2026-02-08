@@ -84,6 +84,11 @@ export default function HeroCarousel() {
 
   return (
     <section className="relative h-[600px] mt-[104px] overflow-hidden">
+      {/* Language Selector */}
+      <div className="absolute top-6 right-6 z-50">
+        <div id="google_translate_element"></div>
+      </div>
+
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex h-[600px]">
           {slides.map((slide) => (
