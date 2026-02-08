@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ChevronDown, Menu, X, Globe } from "lucide-react";
+import { ChevronDown, Menu, X, Globe, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function Header() {
@@ -106,6 +106,9 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-3">
+            <button className="p-2 text-gray-700 hover:text-[#049fd9] transition-colors">
+              <Search className="h-5 w-5" />
+            </button>
             <Link href="/contact">
               <button className="px-4 py-2 text-sm font-medium text-[#049fd9] hover:text-[#00bceb] transition-colors">
                 Sign In
