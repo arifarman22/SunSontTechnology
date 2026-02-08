@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
-import { translatePage } from "../lib/translate";
 
 const slides = [
   {
@@ -83,45 +82,8 @@ export default function HeroCarousel() {
     };
   }, [emblaApi, onSelect]);
 
-  const handleLanguageChange = (lang: string) => {
-    if (lang) translatePage(lang);
-  };
-
   return (
     <section className="relative h-[600px] mt-[104px] overflow-hidden">
-      {/* Google Translate Widget */}
-      <div className="absolute top-6 right-6 z-50">
-        <select 
-          onChange={(e) => handleLanguageChange(e.target.value)}
-          className="bg-white border-2 border-gray-300 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:border-[#049fd9] focus:border-[#049fd9] focus:outline-none cursor-pointer shadow-lg"
-        >
-          <option value="">🌐 Select Language</option>
-          <option value="en">🇺🇸 English</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="fr">🇫🇷 Français</option>
-          <option value="de">🇩🇪 Deutsch</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="pt">🇵🇹 Português</option>
-          <option value="zh-CN">🇨🇳 中文</option>
-          <option value="ja">🇯🇵 日本語</option>
-          <option value="ko">🇰🇷 한국어</option>
-          <option value="ar">🇸🇦 العربية</option>
-          <option value="hi">🇮🇳 हिन्दी</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="nl">🇳🇱 Nederlands</option>
-          <option value="sv">🇸🇪 Svenska</option>
-          <option value="pl">🇵🇱 Polski</option>
-          <option value="tr">🇹🇷 Türkçe</option>
-          <option value="th">🇹🇭 ไทย</option>
-          <option value="vi">🇻🇳 Tiếng Việt</option>
-          <option value="id">🇮🇩 Bahasa Indonesia</option>
-          <option value="ms">🇲🇾 Bahasa Melayu</option>
-          <option value="bn">🇧🇩 বাংলা</option>
-          <option value="ur">🇵🇰 اردو</option>
-          <option value="fa">🇮🇷 فارسی</option>
-        </select>
-      </div>
-
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex h-[600px]">
           {slides.map((slide) => (
@@ -150,12 +112,12 @@ export default function HeroCarousel() {
                   </div>
                   <h1 className={`text-5xl lg:text-6xl font-bold leading-tight ${
                     slide.theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`} data-translate>
+                  }`}>
                     {slide.title}
                   </h1>
                   <p className={`text-lg lg:text-xl max-w-xl ${
                     slide.theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
-                  }`} data-translate>
+                  }`}>
                     {slide.description}
                   </p>
                   <div className="flex space-x-4 pt-4">
