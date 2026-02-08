@@ -1,6 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { upload } from "./upload";
+import express from "express";
+import bcrypt from "bcryptjs";
+import { authMiddleware, adminOnly, generateToken, type AuthRequest } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
@@ -30,18 +34,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(product);
   });
 
-  app.post("/api/products", async (req, res) => {
+  app.post("/api/products", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const product = await storage.createProduct(req.body);
     res.status(201).json(product);
   });
 
-  app.put("/api/products/:id", async (req, res) => {
+  app.put("/api/products/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const product = await storage.updateProduct(req.params.id, req.body);
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   });
 
-  app.delete("/api/products/:id", async (req, res) => {
+  app.delete("/api/products/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const deleted = await storage.deleteProduct(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Product not found" });
     res.status(204).send();
@@ -59,18 +63,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(solution);
   });
 
-  app.post("/api/solutions", async (req, res) => {
+  app.post("/api/solutions", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const solution = await storage.createSolution(req.body);
     res.status(201).json(solution);
   });
 
-  app.put("/api/solutions/:id", async (req, res) => {
+  app.put("/api/solutions/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const solution = await storage.updateSolution(req.params.id, req.body);
     if (!solution) return res.status(404).json({ message: "Solution not found" });
     res.json(solution);
   });
 
-  app.delete("/api/solutions/:id", async (req, res) => {
+  app.delete("/api/solutions/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const deleted = await storage.deleteSolution(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Solution not found" });
     res.status(204).send();
@@ -88,18 +92,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(slide);
   });
 
-  app.post("/api/hero-slides", async (req, res) => {
+  app.post("/api/hero-slides", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const slide = await storage.createHeroSlide(req.body);
     res.status(201).json(slide);
   });
 
-  app.put("/api/hero-slides/:id", async (req, res) => {
+  app.put("/api/hero-slides/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const slide = await storage.updateHeroSlide(req.params.id, req.body);
     if (!slide) return res.status(404).json({ message: "Hero slide not found" });
     res.json(slide);
   });
 
-  app.delete("/api/hero-slides/:id", async (req, res) => {
+  app.delete("/api/hero-slides/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const deleted = await storage.deleteHeroSlide(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Hero slide not found" });
     res.status(204).send();
@@ -117,18 +121,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(post);
   });
 
-  app.post("/api/news", async (req, res) => {
+  app.post("/api/news", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const post = await storage.createNewsPost(req.body);
     res.status(201).json(post);
   });
 
-  app.put("/api/news/:id", async (req, res) => {
+  app.put("/api/news/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const post = await storage.updateNewsPost(req.params.id, req.body);
     if (!post) return res.status(404).json({ message: "News post not found" });
     res.json(post);
   });
 
-  app.delete("/api/news/:id", async (req, res) => {
+  app.delete("/api/news/:id", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const deleted = await storage.deleteNewsPost(req.params.id);
     if (!deleted) return res.status(404).json({ message: "News post not found" });
     res.status(204).send();
@@ -141,9 +145,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(info);
   });
 
-  app.put("/api/company-info", async (req, res) => {
+  app.put("/api/company-info", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
     const info = await storage.updateCompanyInfo(req.body);
     res.json(info);
+  });
+
+  // File Upload API
+  app.post("/api/upload", authMiddleware, upload.single('file'), (req: AuthRequest, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    res.json({
+      message: "File uploaded successfully",
+      filename: req.file.filename,
+      url: `/uploads/${req.file.filename}`,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
+  });
+
+  app.use('/uploads', express.static('uploads'));
+
+  // Auth API
+  app.post("/api/auth/login", async (req, res) => {
+    const { username, password } = req.body;
+    
+    const user = await storage.getUserByUsername(username);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = generateToken(user.id, user.role);
+    res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+  });
+
+  app.post("/api/auth/register", authMiddleware, adminOnly, async (req: AuthRequest, res) => {
+    const { username, password, role } = req.body;
+    
+    const existing = await storage.getUserByUsername(username);
+    if (existing) {
+      return res.status(400).json({ message: "Username already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await storage.createUser({ username, password: hashedPassword, role: role || 'user' });
+    
+    res.status(201).json({ id: user.id, username: user.username, role: user.role });
+  });
+
+  app.get("/api/auth/me", authMiddleware, async (req: AuthRequest, res) => {
+    const user = await storage.getUser(req.userId!);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ id: user.id, username: user.username, role: user.role });
   });
 
   const httpServer = createServer(app);
