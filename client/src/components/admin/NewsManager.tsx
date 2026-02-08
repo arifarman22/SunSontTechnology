@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import type { NewsPost } from '@/lib/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://sunsontechnology-backend.onrender.com/api';
+const API_BASE_URL = 'https://sunsontechnology-backend.onrender.com/api';
 
 export default function NewsManager() {
   const [news, setNews] = useState<NewsPost[]>([]);
