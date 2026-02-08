@@ -101,6 +101,20 @@ export class MemStorage implements IStorage {
     this.solutions = new Map();
     this.heroSlides = new Map();
     this.newsPosts = new Map();
+    this.seedData();
+  }
+
+  private seedData() {
+    // Seed products
+    const product1: Product = {
+      id: randomUUID(),
+      title: "Cash Deposit Machine",
+      description: "Advanced ATM solution for banking operations",
+      category: "Banking",
+      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
+      features: ["High security", "Fast processing", "24/7 operation"]
+    };
+    this.products.set(product1.id, product1);
   }
 
   async getUser(id: string): Promise<User | undefined> {
