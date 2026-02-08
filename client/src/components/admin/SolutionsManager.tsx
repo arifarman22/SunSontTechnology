@@ -12,7 +12,9 @@ export default function SolutionsManager() {
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Solution | null>(null);
-  const [formData, setFormData] = useState({ title: '', description: '', image: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', image: '', features: [] as string[], benefits: [] as string[] });
+  const [newFeature, setNewFeature] = useState('');
+  const [newBenefit, setNewBenefit] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const fetchSolutions = async () => {
@@ -62,11 +64,7 @@ export default function SolutionsManager() {
     const url = editing ? `${API_BASE_URL}/solutions/${editing.id}` : `${API_BASE_URL}/solutions`;
     const method = editing ? 'PUT' : 'POST';
 
-    const payload = {
-      ...formData,
-      features: [],
-      benefits: []
-    };
+    const payload = formData;
 
     await fetch(url, {
       method,
@@ -79,7 +77,7 @@ export default function SolutionsManager() {
 
     setOpen(false);
     setEditing(null);
-    setFormData({ title: '', description: '', image: '' });
+    setFormData({ title: '', description: '', image: '', features: [], benefits: [] });
     fetchSolutions();
   };
 
@@ -100,7 +98,7 @@ export default function SolutionsManager() {
         <h2 className="text-2xl font-bold">Solutions</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { setEditing(null); setFormData({ title: '', description: '', image: '' }); }}>
+            <Button onClick={() => { setEditing(null); setFormData({ title: '', description: '', image: '', features: [], benefits: [] }); }}>
               Add Solution
             </Button>
           </DialogTrigger>
@@ -118,6 +116,39 @@ export default function SolutionsManager() {
                 {formData.image && <img src={formData.image} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />}
               </div>
               <Input placeholder="Or paste image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Features</label>
+                <div className="flex gap-2">
+                  <Input placeholder="Add feature" value={newFeature} onChange={(e) => setNewFeature(e.target.value)} />
+                  <Button type="button" onClick={() => { if(newFeature) { setFormData({...formData, features: [...formData.features, newFeature]}); setNewFeature(''); } }}>Add</Button>
+                </div>
+                <div className="space-y-1">
+                  {formData.features.map((f, i) => (
+                    <div key={i} className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded">
+                      <span className="text-sm">{f}</span>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => setFormData({...formData, features: formData.features.filter((_, idx) => idx !== i)})}>×</Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Benefits</label>
+                <div className="flex gap-2">
+                  <Input placeholder="Add benefit" value={newBenefit} onChange={(e) => setNewBenefit(e.target.value)} />
+                  <Button type="button" onClick={() => { if(newBenefit) { setFormData({...formData, benefits: [...formData.benefits, newBenefit]}); setNewBenefit(''); } }}>Add</Button>
+                </div>
+                <div className="space-y-1">
+                  {formData.benefits.map((b, i) => (
+                    <div key={i} className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded">
+                      <span className="text-sm">{b}</span>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => setFormData({...formData, benefits: formData.benefits.filter((_, idx) => idx !== i)})}>×</Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Button type="submit" className="w-full">Save</Button>
             </form>
           </DialogContent>
@@ -133,7 +164,7 @@ export default function SolutionsManager() {
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">{solution.description}</p>
               <div className="flex gap-2">
-                <Button size="sm" onClick={() => { setEditing(solution); setFormData({ title: solution.title, description: solution.description, image: solution.image }); setOpen(true); }}>Edit</Button>
+                <Button size="sm" onClick={() => { setEditing(solution); setFormData({ title: solution.title, description: solution.description, image: solution.image, features: solution.features || [], benefits: solution.benefits || [] }); setOpen(true); }}>Edit</Button>
                 <Button size="sm" variant="destructive" onClick={() => handleDelete(solution.id)}>Delete</Button>
               </div>
             </CardContent>

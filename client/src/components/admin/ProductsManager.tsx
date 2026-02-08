@@ -12,7 +12,10 @@ export default function ProductsManager() {
   const [products, setProducts] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState({ title: '', description: '', category: '', image: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', category: '', image: '', features: [] as string[], specifications: {} as Record<string, string> });
+  const [newFeature, setNewFeature] = useState('');
+  const [newSpecKey, setNewSpecKey] = useState('');
+  const [newSpecValue, setNewSpecValue] = useState('');
 
   const fetchProducts = async () => {
     try {
@@ -40,11 +43,7 @@ export default function ProductsManager() {
     
     const method = editingProduct ? 'PUT' : 'POST';
 
-    const payload = {
-      ...formData,
-      features: [],
-      specifications: {}
-    };
+    const payload = formData;
 
     await fetch(url, {
       method,
@@ -57,7 +56,7 @@ export default function ProductsManager() {
 
     setOpen(false);
     setEditingProduct(null);
-    setFormData({ title: '', description: '', category: '', image: '' });
+    setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} });
     fetchProducts();
   };
 
@@ -79,6 +78,8 @@ export default function ProductsManager() {
       description: product.description,
       category: product.category,
       image: product.image,
+      features: product.features || [],
+      specifications: product.specifications || {},
     });
     setOpen(true);
   };
@@ -89,7 +90,7 @@ export default function ProductsManager() {
         <h2 className="text-2xl font-bold">Products</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', category: '', image: '' }); }}>
+            <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} }); }}>
               Add Product
             </Button>
           </DialogTrigger>
@@ -116,6 +117,40 @@ export default function ProductsManager() {
               </select>
               <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
               {formData.image && <img src={formData.image} alt="Preview" className="w-32 h-32 object-cover rounded" />}
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Features</label>
+                <div className="flex gap-2">
+                  <Input placeholder="Add feature" value={newFeature} onChange={(e) => setNewFeature(e.target.value)} />
+                  <Button type="button" onClick={() => { if(newFeature) { setFormData({...formData, features: [...formData.features, newFeature]}); setNewFeature(''); } }}>Add</Button>
+                </div>
+                <div className="space-y-1">
+                  {formData.features.map((f, i) => (
+                    <div key={i} className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded">
+                      <span className="text-sm">{f}</span>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => setFormData({...formData, features: formData.features.filter((_, idx) => idx !== i)})}>×</Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Specifications</label>
+                <div className="flex gap-2">
+                  <Input placeholder="Key" value={newSpecKey} onChange={(e) => setNewSpecKey(e.target.value)} />
+                  <Input placeholder="Value" value={newSpecValue} onChange={(e) => setNewSpecValue(e.target.value)} />
+                  <Button type="button" onClick={() => { if(newSpecKey && newSpecValue) { setFormData({...formData, specifications: {...formData.specifications, [newSpecKey]: newSpecValue}}); setNewSpecKey(''); setNewSpecValue(''); } }}>Add</Button>
+                </div>
+                <div className="space-y-1">
+                  {Object.entries(formData.specifications).map(([k, v]) => (
+                    <div key={k} className="flex justify-between items-center bg-gray-100 px-2 py-1 rounded">
+                      <span className="text-sm"><strong>{k}:</strong> {v}</span>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => { const {[k]: _, ...rest} = formData.specifications; setFormData({...formData, specifications: rest}); }}>×</Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Button type="submit" className="w-full">Save</Button>
             </form>
           </DialogContent>
