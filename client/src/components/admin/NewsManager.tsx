@@ -16,9 +16,15 @@ export default function NewsManager() {
   const [uploading, setUploading] = useState(false);
 
   const fetchNews = async () => {
-    const res = await fetch(`${API_BASE_URL}/news`);
-    const data = await res.json();
-    setNews(data);
+    try {
+      const res = await fetch(`${API_BASE_URL}/news`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setNews(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching news:', error);
+      setNews([]);
+    }
   };
 
   useEffect(() => {

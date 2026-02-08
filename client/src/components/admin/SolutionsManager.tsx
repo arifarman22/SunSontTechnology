@@ -16,9 +16,15 @@ export default function SolutionsManager() {
   const [uploading, setUploading] = useState(false);
 
   const fetchSolutions = async () => {
-    const res = await fetch(`${API_BASE_URL}/solutions`);
-    const data = await res.json();
-    setSolutions(data);
+    try {
+      const res = await fetch(`${API_BASE_URL}/solutions`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setSolutions(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching solutions:', error);
+      setSolutions([]);
+    }
   };
 
   useEffect(() => {

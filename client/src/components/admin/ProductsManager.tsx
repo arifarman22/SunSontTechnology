@@ -16,9 +16,15 @@ export default function ProductsManager() {
   const [uploading, setUploading] = useState(false);
 
   const fetchProducts = async () => {
-    const res = await fetch(`${API_BASE_URL}/products`);
-    const data = await res.json();
-    setProducts(data);
+    try {
+      const res = await fetch(`${API_BASE_URL}/products`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+    }
   };
 
   useEffect(() => {
