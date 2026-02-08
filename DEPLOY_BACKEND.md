@@ -1,41 +1,39 @@
 # Backend Deployment Instructions
 
-## Deploy to Vercel
+## Deploy to Render
 
-### Method 1: Vercel Dashboard (Easiest)
-1. Go to https://vercel.com/new
-2. Import GitHub repo: arifarman22/SunSontTechnology
-3. Project Name: `sunson-backend`
-4. Framework: Other
-5. Root Directory: `./`
-6. Click Deploy
+### Current Deployment
+- Backend URL: `https://sunsontechnology-backend.onrender.com`
+- Status: ✅ Live and Running
 
-### Method 2: Vercel CLI
-```bash
-npm install -g vercel
-vercel login
-vercel --prod
+### Render Configuration
+1. Build Command: `npm install && npm run build:server`
+2. Start Command: `npm start`
+3. Environment Variables:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `NODE_ENV`: production
+   - `ALLOWED_ORIGINS`: https://www.sunson-tech.com,https://sunson-tech.com
+   - `JWT_SECRET`: your_secret_key
+
+### Test Endpoints
+- https://sunsontechnology-backend.onrender.com/
+- https://sunsontechnology-backend.onrender.com/api/products
+- https://sunsontechnology-backend.onrender.com/api/solutions
+- https://sunsontechnology-backend.onrender.com/api/hero-slides
+- https://sunsontechnology-backend.onrender.com/api/news
+- https://sunsontechnology-backend.onrender.com/api/company-info
+- https://sunsontechnology-backend.onrender.com/api/upload (POST)
+
+### Frontend Configuration
+Frontend `.env` file:
 ```
-
-## After Deployment
-
-1. Your backend will be at: `https://sunson-backend.vercel.app`
-2. Test endpoints:
-   - https://sunson-backend.vercel.app/api/products
-   - https://sunson-backend.vercel.app/api/solutions
-   - https://sunson-backend.vercel.app/api/hero-slides
-   - https://sunson-backend.vercel.app/api/news
-   - https://sunson-backend.vercel.app/api/company-info
-
-3. Update frontend `.env` file in client folder:
+VITE_API_URL=https://sunsontechnology-backend.onrender.com/api
 ```
-VITE_API_URL=https://sunson-backend.vercel.app
-```
-
-4. Redeploy frontend to use new backend URL
 
 ## Current Configuration
-- Backend API: `api/index.ts`
-- Storage: In-memory (server/storage.ts)
-- CORS: Enabled for all origins
-- Endpoints: Products, Solutions, Hero Slides, News, Company Info
+- Backend: Node.js + Express
+- Database: PostgreSQL (Neon)
+- Storage: Database-backed (server/db-storage.ts)
+- File Uploads: Multer (5MB limit)
+- CORS: Enabled for sunson-tech.com
+- Endpoints: Products, Solutions, Hero Slides, News, Company Info, File Upload
