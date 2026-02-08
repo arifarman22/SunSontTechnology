@@ -13,6 +13,7 @@ export default function NewsManager() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<NewsPost | null>(null);
   const [formData, setFormData] = useState({ title: '', content: '', image: '', author: '' });
+  const [uploading, setUploading] = useState(false);
 
   const fetchNews = async () => {
     const res = await fetch(`${API_BASE_URL}/news`);
@@ -23,6 +24,30 @@ export default function NewsManager() {
   useEffect(() => {
     fetchNews();
   }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      setFormData(prev => ({ ...prev, image: `https://sunsontechnology-backend.onrender.com${data.url}` }));
+    } catch (error) {
+      alert('Image upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +99,13 @@ export default function NewsManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input placeholder="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <Textarea placeholder="Content" value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} required />
-              <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
+              <div>
+                <label className="block text-sm font-medium mb-2">Upload Image</label>
+                <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+                {formData.image && <img src={formData.image} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />}
+              </div>
+              <Input placeholder="Or paste image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
               <Input placeholder="Author" value={formData.author} onChange={(e) => setFormData({ ...formData, author: e.target.value })} required />
               <Button type="submit" className="w-full">Save</Button>
             </form>

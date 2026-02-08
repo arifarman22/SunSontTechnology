@@ -13,6 +13,7 @@ export default function ProductsManager() {
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({ title: '', description: '', category: '', image: '' });
+  const [uploading, setUploading] = useState(false);
 
   const fetchProducts = async () => {
     const res = await fetch(`${API_BASE_URL}/products`);
@@ -23,6 +24,30 @@ export default function ProductsManager() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      setFormData(prev => ({ ...prev, image: `https://sunsontechnology-backend.onrender.com${data.url}` }));
+    } catch (error) {
+      alert('Image upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +114,13 @@ export default function ProductsManager() {
               <Input placeholder="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <Textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required />
               <Input placeholder="Category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} required />
-              <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
+              <div>
+                <label className="block text-sm font-medium mb-2">Upload Image</label>
+                <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                {uploading && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+                {formData.image && <img src={formData.image} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />}
+              </div>
+              <Input placeholder="Or paste image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
               <Button type="submit" className="w-full">Save</Button>
             </form>
           </DialogContent>
