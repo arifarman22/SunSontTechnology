@@ -40,6 +40,29 @@ if (!process.env.DATABASE_URL) {
 
 const sql = neon(process.env.DATABASE_URL || '');
 
+let dbInitialized = false;
+
+async function ensureTablesExist() {
+  if (dbInitialized) return;
+  try {
+    await sql`CREATE TABLE IF NOT EXISTS users (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, username VARCHAR(255) UNIQUE NOT NULL, password TEXT NOT NULL, role VARCHAR(50) NOT NULL DEFAULT 'user')`;
+    await sql`CREATE TABLE IF NOT EXISTS products (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, category TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', specifications JSONB DEFAULT '{}')`;
+    await sql`CREATE TABLE IF NOT EXISTS solutions (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', benefits JSONB DEFAULT '[]')`;
+    await sql`CREATE TABLE IF NOT EXISTS hero_slides (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT NOT NULL, theme VARCHAR(50) NOT NULL)`;
+    await sql`CREATE TABLE IF NOT EXISTS news_posts (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
+    await sql`CREATE TABLE IF NOT EXISTS company_info (id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text, about TEXT, mission TEXT, vision TEXT, values JSONB DEFAULT '[]', stats JSONB DEFAULT '{}')`;
+    
+    const existingUser = await sql`SELECT * FROM users WHERE username = 'SunsonTech'`;
+    if (existingUser.length === 0 && process.env.ADMIN_PASSWORD) {
+      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+      await sql`INSERT INTO users (id, username, password, role) VALUES ('admin-001', 'SunsonTech', ${hashedPassword}, 'admin')`;
+    }
+    dbInitialized = true;
+  } catch (error) {
+    console.error('Table initialization error:', error);
+  }
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -80,6 +103,8 @@ app.get('/api/products', async (req, res) => {
       console.error('DATABASE_URL not configured');
       return res.status(500).json({ message: 'Database not configured' });
     }
+    
+    await ensureTablesExist();
     
     const products = await sql`SELECT * FROM products ORDER BY title`;
     const parsed = products.map(p => ({
