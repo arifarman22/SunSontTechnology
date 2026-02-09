@@ -73,9 +73,11 @@ export default function SolutionsPage() {
                       </div>
                     )}
                     
-                    <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] flex items-center justify-center">
-                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Link href={`/solutions/${solution.id}`}>
+                      <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] flex items-center justify-center">
+                        Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}

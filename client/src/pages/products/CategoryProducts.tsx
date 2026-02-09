@@ -110,9 +110,11 @@ export default function CategoryProducts() {
                       </div>
                     )}
                     
-                    <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
-                      View Details
-                    </Button>
+                    <Link href={`/products/${category}/${product.id}`}>
+                      <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
+                        View Details
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}
