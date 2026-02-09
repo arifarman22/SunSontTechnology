@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
 import SolutionsMegaDropdown from "./SolutionsMegaDropdown";
 import CompanyMegaDropdown from "./CompanyMegaDropdown";
+import logoImage from '@/images/Logo.jpeg';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -75,7 +76,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center cursor-pointer">
-              <img src="/src/images/Logo.jpeg" alt="Sunson Technology" className="h-12" />
+              <img src={logoImage} alt="Sunson Technology" className="h-12" />
             </div>
           </Link>
 
