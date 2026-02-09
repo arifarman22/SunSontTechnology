@@ -267,18 +267,62 @@ export default function ProductsManager() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {products.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              <CardTitle>{product.title}</CardTitle>
+          <Card key={product.id} className="hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-blue-500">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-white">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-xl mb-2">{product.title}</CardTitle>
+                  <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                    {product.category}
+                  </span>
+                </div>
+                {product.image && (
+                  <img src={product.image} alt={product.title} className="w-20 h-20 object-cover rounded-lg ml-4" />
+                )}
+              </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-              <p className="text-xs text-gray-500 mb-4">Category: <span className="font-semibold">{product.category}</span></p>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => handleEdit(product)}>Edit</Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(product.id)}>Delete</Button>
+            <CardContent className="pt-4">
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+              
+              {product.features && product.features.length > 0 && (
+                <div className="mb-4 pb-4 border-b">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">Key Features</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {product.features.slice(0, 3).map((feature, index) => (
+                      <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                        {feature}
+                      </span>
+                    ))}
+                    {product.features.length > 3 && (
+                      <span className="text-xs text-blue-600 font-medium">+{product.features.length - 3} more</span>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {product.specifications && Object.keys(product.specifications).length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">Specifications</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {Object.entries(product.specifications).slice(0, 4).map(([key, value]) => (
+                      <div key={key} className="flex items-center">
+                        <span className="text-gray-500">{key}:</span>
+                        <span className="ml-1 text-gray-700 font-medium truncate">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" onClick={() => handleEdit(product)} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  Edit Product
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => handleDelete(product.id)} className="border-red-300 text-red-600 hover:bg-red-50">
+                  Delete
+                </Button>
               </div>
             </CardContent>
           </Card>

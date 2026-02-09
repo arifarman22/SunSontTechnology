@@ -134,17 +134,64 @@ export default function SolutionsManager() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {solutions.map((solution) => (
-          <Card key={solution.id}>
-            <CardHeader>
-              <CardTitle>{solution.title}</CardTitle>
+          <Card key={solution.id} className="hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-purple-500">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-white">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-xl mb-2">{solution.title}</CardTitle>
+                  <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                    Solution
+                  </span>
+                </div>
+                {solution.image && (
+                  <img src={solution.image} alt={solution.title} className="w-20 h-20 object-cover rounded-lg ml-4" />
+                )}
+              </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-4">{solution.description}</p>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => { setEditing(solution); setFormData({ title: solution.title, description: solution.description, image: solution.image, features: solution.features || [], benefits: solution.benefits || [] }); setOpen(true); }}>Edit</Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(solution.id)}>Delete</Button>
+            <CardContent className="pt-4">
+              <p className="text-sm text-gray-600 mb-4 line-clamp-2">{solution.description}</p>
+              
+              {solution.features && solution.features.length > 0 && (
+                <div className="mb-4 pb-4 border-b">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">Features</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {solution.features.slice(0, 3).map((feature, index) => (
+                      <span key={index} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                        {feature}
+                      </span>
+                    ))}
+                    {solution.features.length > 3 && (
+                      <span className="text-xs text-purple-600 font-medium">+{solution.features.length - 3} more</span>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {solution.benefits && solution.benefits.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">Benefits</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {solution.benefits.slice(0, 3).map((benefit, index) => (
+                      <span key={index} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                        {benefit}
+                      </span>
+                    ))}
+                    {solution.benefits.length > 3 && (
+                      <span className="text-xs text-purple-600 font-medium">+{solution.benefits.length - 3} more</span>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" onClick={() => { setEditing(solution); setFormData({ title: solution.title, description: solution.description, image: solution.image, features: solution.features || [], benefits: solution.benefits || [] }); setOpen(true); }} className="flex-1 bg-purple-600 hover:bg-purple-700">
+                  Edit Solution
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => handleDelete(solution.id)} className="border-red-300 text-red-600 hover:bg-red-50">
+                  Delete
+                </Button>
               </div>
             </CardContent>
           </Card>
