@@ -8,6 +8,7 @@ import CategoryProducts from "@/pages/products/CategoryProducts";
 import ProductDetails from "@/pages/ProductDetails";
 import SolutionsPage from "@/pages/SolutionsPage";
 import SolutionDetails from "@/pages/SolutionDetails";
+import SearchPage from "@/pages/SearchPage";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import News from "@/pages/News";
@@ -19,6 +20,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/search" component={SearchPage} />
       <Route path="/products/:category/:id" component={ProductDetails} />
       <Route path="/products/:category" component={CategoryProducts} />
       <Route path="/solutions/:id" component={SolutionDetails} />

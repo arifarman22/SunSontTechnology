@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Search } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
 import SolutionsMegaDropdown from "./SolutionsMegaDropdown";
 import CompanyMegaDropdown from "./CompanyMegaDropdown";
@@ -12,6 +12,8 @@ export default function Navbar() {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -45,6 +47,15 @@ export default function Navbar() {
     setIsMegaMenuOpen(false);
     setIsSolutionsOpen(false);
     setIsCompanyOpen(false);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -140,6 +151,15 @@ export default function Navbar() {
             <Link href="/contact" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#049fd9] transition-colors">
               Contact
             </Link>
+
+            {/* Search Button */}
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="px-3 py-2 text-gray-700 hover:text-[#049fd9] transition-colors"
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -173,6 +193,31 @@ export default function Navbar() {
       <MegaDropdown isOpen={isMegaMenuOpen} onClose={closeMegaMenu} />
       <SolutionsMegaDropdown isOpen={isSolutionsOpen} onClose={closeAllMenus} />
       <CompanyMegaDropdown isOpen={isCompanyOpen} onClose={closeAllMenus} />
+
+      {/* Search Overlay */}
+      {isSearchOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsSearchOpen(false)} />
+          <div className="absolute top-full left-0 right-0 bg-white shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="container mx-auto px-6 py-8">
+              <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search products, solutions, or content..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-lg focus:border-[#049fd9] focus:outline-none"
+                    autoFocus
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-3 text-center">Press Enter to search or ESC to close</p>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 }
