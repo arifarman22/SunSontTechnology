@@ -5,13 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Phone, Mail, Clock, Globe } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Globe, Factory } from "lucide-react";
 
 export default function Contact() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
         <div className="container mx-auto px-6">
@@ -19,7 +19,7 @@ export default function Contact() {
             <div className="text-sm font-semibold mb-4 uppercase tracking-wider opacity-90">Get In Touch</div>
             <h1 className="text-5xl lg:text-6xl font-bold mb-6">Contact Us</h1>
             <p className="text-xl opacity-90 mb-8">
-              Get in touch with our experts to discuss your self-service technology needs. 
+              Get in touch with our experts to discuss your self-service technology needs.
               We're here to help you find the perfect solution for your business.
             </p>
           </div>
@@ -36,7 +36,7 @@ export default function Contact() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Global Headquarters</h3>
               <p className="text-gray-600 text-sm">
-                Technology Park<br />
+                <strong>Technology Park</strong><br />
                 Innovation District<br />
                 Suite 1500<br />
                 Tech City, TC 12345
@@ -45,7 +45,7 @@ export default function Contact() {
 
             <div className="bg-white border border-gray-200 rounded-lg p-8 text-center hover:shadow-lg transition-shadow">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="h-8 w-8 text-green-600" />
+                <Factory className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Phone & Support</h3>
               <p className="text-gray-600 text-sm">
@@ -77,7 +77,7 @@ export default function Contact() {
               <h3 className="text-3xl font-bold text-gray-900 mb-2">Business Hours</h3>
               <p className="text-gray-600">We're available to help when you need us most</p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <h4 className="font-semibold text-gray-900 mb-2">Sales Team</h4>
@@ -182,8 +182,8 @@ export default function Contact() {
 
                 <div className="space-y-2">
                   <Label htmlFor="message">Message *</Label>
-                  <Textarea 
-                    id="message" 
+                  <Textarea
+                    id="message"
                     placeholder="Please describe your requirements, questions, or how we can help you..."
                     className="min-h-32"
                     data-testid="textarea-message"
@@ -197,7 +197,7 @@ export default function Contact() {
                       I would like to receive updates about Sunson Technology products and services
                     </Label>
                   </div>
-                  
+
                   <div className="flex items-start space-x-2">
                     <input type="checkbox" id="privacy" className="mt-1" data-testid="checkbox-privacy" />
                     <Label htmlFor="privacy" className="text-sm">
@@ -211,55 +211,6 @@ export default function Contact() {
                     Send Message
                   </Button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Regional Offices */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <Globe className="h-12 w-12 text-[#049fd9] mx-auto mb-4" />
-            <div className="text-sm font-semibold text-[#049fd9] mb-3 uppercase tracking-wider">Global Presence</div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Worldwide Locations</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              With offices and partners worldwide, we provide local support and expertise
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">North America</h3>
-              <p className="text-sm text-gray-500 mb-4">United States & Canada</p>
-              <div className="space-y-2 text-sm">
-                <p className="font-semibold text-gray-900">Headquarters</p>
-                <p className="text-gray-600">Technology Park, Innovation District</p>
-                <p className="text-gray-600">Phone: +1 (555) 123-4567</p>
-                <p className="text-gray-600">Email: americas@sunson-tech.com</p>
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Europe</h3>
-              <p className="text-sm text-gray-500 mb-4">EU & UK Operations</p>
-              <div className="space-y-2 text-sm">
-                <p className="font-semibold text-gray-900">Regional Office</p>
-                <p className="text-gray-600">Frankfurt Technology Center</p>
-                <p className="text-gray-600">Phone: +49 (0) 69 123 4567</p>
-                <p className="text-gray-600">Email: europe@sunson-tech.com</p>
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Asia Pacific</h3>
-              <p className="text-sm text-gray-500 mb-4">APAC Region</p>
-              <div className="space-y-2 text-sm">
-                <p className="font-semibold text-gray-900">Regional Office</p>
-                <p className="text-gray-600">Singapore Technology Hub</p>
-                <p className="text-gray-600">Phone: +65 6123 4567</p>
-                <p className="text-gray-600">Email: apac@sunson-tech.com</p>
               </div>
             </div>
           </div>
