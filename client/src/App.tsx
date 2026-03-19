@@ -1,8 +1,10 @@
+import { useState, useCallback } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import SplashScreen from "@/components/SplashScreen";
 import Home from "@/pages/Home";
 import CategoryProducts from "@/pages/products/CategoryProducts";
 import ProductDetails from "@/pages/ProductDetails";
@@ -36,9 +38,13 @@ function Router() {
 }
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const handleSplashFinish = useCallback(() => setShowSplash(false), []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
         <Toaster />
         <Router />
       </TooltipProvider>
