@@ -1,12 +1,18 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import logoImage from '@/images/Logo.jpeg';
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export default function Footer() {
+  const footerReveal = useScrollReveal(0.1);
+
   return (
     <footer className="bg-[#1d1d1d] text-white">
       {/* Main Footer */}
-      <div className="container mx-auto px-6 py-12">
+      <div
+        ref={footerReveal.ref}
+        className={`container mx-auto px-6 py-12 reveal-up ${footerReveal.isVisible ? 'visible' : ''}`}
+      >
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">

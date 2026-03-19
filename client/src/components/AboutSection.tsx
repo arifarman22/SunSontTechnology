@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ArrowRight, Award, Users, Globe, TrendingUp } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const stats = [
   { icon: Award, value: "25+", label: "Years Experience" },
@@ -40,16 +41,25 @@ const solutions = [
 ];
 
 export default function AboutSection() {
+  const statsReveal = useScrollReveal(0.2);
+  const aboutText = useScrollReveal();
+  const aboutImage = useScrollReveal();
+  const solutionsHeading = useScrollReveal();
+  const solutionsGrid = useScrollReveal(0.1);
+
   return (
     <>
       {/* Stats Section */}
       <section className="py-16 bg-[#049fd9]">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            ref={statsReveal.ref}
+            className={`grid grid-cols-2 lg:grid-cols-4 gap-8 stagger-children ${statsReveal.isVisible ? 'visible' : ''}`}
+          >
             {stats.map((stat, index) => {
               const IconComponent = stat.icon;
               return (
-                <div key={index} className="text-center text-white">
+                <div key={index} className={`text-center text-white reveal-count ${statsReveal.isVisible ? 'visible' : ''}`}>
                   <IconComponent className="h-10 w-10 mx-auto mb-3 opacity-90" />
                   <div className="text-4xl font-bold mb-1">{stat.value}</div>
                   <div className="text-sm opacity-90">{stat.label}</div>
@@ -64,7 +74,10 @@ export default function AboutSection() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
-            <div>
+            <div
+              ref={aboutText.ref}
+              className={`reveal-left ${aboutText.isVisible ? 'visible' : ''}`}
+            >
               <div className="text-sm font-semibold text-[#049fd9] mb-3 uppercase tracking-wider">Who We Are</div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
                 Leading the Future of Self-Service Technology
@@ -82,7 +95,10 @@ export default function AboutSection() {
                 </button>
               </Link>
             </div>
-            <div>
+            <div
+              ref={aboutImage.ref}
+              className={`reveal-right ${aboutImage.isVisible ? 'visible' : ''}`}
+            >
               <img 
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
                 alt="Sunson Technology Team" 
@@ -92,14 +108,20 @@ export default function AboutSection() {
           </div>
 
           {/* Solution Pillars */}
-          <div className="text-center mb-12">
+          <div
+            ref={solutionsHeading.ref}
+            className={`text-center mb-12 reveal-up ${solutionsHeading.isVisible ? 'visible' : ''}`}
+          >
             <div className="text-sm font-semibold text-[#049fd9] mb-3 uppercase tracking-wider">Our Solutions</div>
             <h3 className="text-3xl font-bold text-gray-900">Industry-Specific Technology</h3>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div
+            ref={solutionsGrid.ref}
+            className={`grid md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children ${solutionsGrid.isVisible ? 'visible' : ''}`}
+          >
             {solutions.map((solution) => (
               <Link key={solution.id} href={solution.link}>
-                <div className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer h-full">
+                <div className={`group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer h-full reveal-up ${solutionsGrid.isVisible ? 'visible' : ''}`}>
                   <div className="relative h-48 overflow-hidden">
                     <img 
                       src={solution.image} 

@@ -8,6 +8,7 @@ import {
   CreditCard,
   ArrowRight
 } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const categories = [
   {
@@ -61,10 +62,16 @@ const categories = [
 ];
 
 export default function ProductCategories() {
+  const heading = useScrollReveal();
+  const grid = useScrollReveal(0.1);
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div
+          ref={heading.ref}
+          className={`text-center mb-16 reveal-up ${heading.isVisible ? 'visible' : ''}`}
+        >
           <div className="text-sm font-semibold text-[#049fd9] mb-3 uppercase tracking-wider">Our Solutions</div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Products Built for Innovation</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -72,12 +79,15 @@ export default function ProductCategories() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          ref={grid.ref}
+          className={`grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children ${grid.isVisible ? 'visible' : ''}`}
+        >
           {categories.map((category) => {
             const IconComponent = category.icon;
             return (
               <Link key={category.id} href={category.link}>
-                <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer h-full">
+                <div className={`group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer h-full reveal-up ${grid.isVisible ? 'visible' : ''}`}>
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img 

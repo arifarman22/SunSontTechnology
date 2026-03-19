@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import { getNewsPosts, type NewsPost } from "@/lib/api";
-import { Calendar, User } from "lucide-react";
+import { User } from "lucide-react";
 
 export default function News() {
   const [news, setNews] = useState<NewsPost[]>([]);
@@ -65,15 +65,9 @@ export default function News() {
                     />
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{new Date(post.date).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        <span>{post.author}</span>
-                      </div>
+                    <div className="flex items-center gap-1 text-sm text-gray-500 mb-3">
+                      <User className="h-4 w-4" />
+                      <span>{post.author}</span>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-[#049fd9] transition-colors">
                       {post.title}

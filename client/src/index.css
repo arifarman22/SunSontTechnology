@@ -243,3 +243,73 @@ iframe.skiptranslate {
 .animate-splash-bar {
   animation: splash-bar 1.8s ease-in-out 0.4s forwards;
 }
+
+/* Scroll Reveal Animations */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes reveal-scale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes count-up-pulse {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.reveal-up {
+  opacity: 0;
+}
+.reveal-up.visible {
+  animation: reveal-up 0.7s ease-out forwards;
+}
+
+.reveal-left {
+  opacity: 0;
+}
+.reveal-left.visible {
+  animation: reveal-left 0.7s ease-out forwards;
+}
+
+.reveal-right {
+  opacity: 0;
+}
+.reveal-right.visible {
+  animation: reveal-right 0.7s ease-out forwards;
+}
+
+.reveal-scale {
+  opacity: 0;
+}
+.reveal-scale.visible {
+  animation: reveal-scale 0.6s ease-out forwards;
+}
+
+.reveal-count {
+  opacity: 0;
+}
+.reveal-count.visible {
+  animation: count-up-pulse 0.6s ease-out forwards;
+}
+
+/* Staggered children delays */
+.stagger-children.visible > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children.visible > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-children.visible > *:nth-child(3) { animation-delay: 200ms; }
+.stagger-children.visible > *:nth-child(4) { animation-delay: 300ms; }
+.stagger-children.visible > *:nth-child(5) { animation-delay: 400ms; }
+.stagger-children.visible > *:nth-child(6) { animation-delay: 500ms; }
