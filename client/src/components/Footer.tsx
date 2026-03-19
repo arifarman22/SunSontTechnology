@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import logoImage from '@/images/Logo.jpeg';
 
 export default function Footer() {
   return (
@@ -10,19 +11,8 @@ export default function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/">
-              <div className="flex items-center space-x-2 cursor-pointer group">
-                <div className="w-10 h-10 bg-[#049fd9] rounded flex items-center justify-center group-hover:bg-[#00bceb] transition-colors">
-                  <span className="text-white font-bold text-xl">S</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-lg font-bold">SUNSON</span>
-                  <span className="text-[10px] text-gray-400 -mt-1">TECHNOLOGY</span>
-                </div>
-              </div>
+              <img src={logoImage} alt="Sunson Technology" className="h-12 cursor-pointer" />
             </Link>
-            <p className="text-gray-400 text-sm max-w-md">
-              Leading manufacturer of innovative self-service solutions for banking, healthcare, and security industries worldwide. Trusted by 500+ organizations across 50+ countries.
-            </p>
             <div className="flex space-x-3 pt-2">
               <a href="#" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#049fd9] transition-colors">
                 <Facebook className="h-4 w-4" />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { Menu, X, ChevronDown, Search } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
@@ -14,11 +14,22 @@ export default function Navbar() {
   const [isCompanyOpen, setIsCompanyOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        closeAllMenus();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const toggleMegaMenu = () => {
@@ -60,6 +71,7 @@ export default function Navbar() {
 
   return (
     <header 
+      ref={headerRef}
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'
       }`}
