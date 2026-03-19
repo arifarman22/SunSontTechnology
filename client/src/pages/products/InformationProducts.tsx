@@ -99,11 +99,11 @@ export default function InformationProducts() {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-indigo-900 to-indigo-700 text-white py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 text-gray-900 py-24 mt-[104px]">
+        <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl font-bold mb-6">Information & AR Solutions</h1>
-            <p className="text-xl text-indigo-100 mb-8">
+            <p className="text-xl text-gray-700 mb-8">
               Interactive information systems and augmented reality solutions that enhance 
               customer experience with intuitive interfaces and real-time information delivery.
             </p>

@@ -99,11 +99,11 @@ export default function TransportationProducts() {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-900 to-purple-700 text-white py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 text-gray-900 py-24 mt-[104px]">
+        <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl font-bold mb-6">Transportation Solutions</h1>
-            <p className="text-xl text-purple-100 mb-8">
+            <p className="text-xl text-gray-700 mb-8">
               Smart ticketing and transportation kiosks designed to modernize public transit 
               systems with efficient self-service capabilities and seamless user experience.
             </p>

@@ -92,13 +92,13 @@ export default function SearchPage() {
     <div className="min-h-screen">
       <Navbar />
       
-      <section className="bg-[#049fd9] text-white py-16 mt-[104px]">
+      <section className="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 text-gray-900 py-16 mt-[104px]">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <Search className="h-12 w-12 mx-auto mb-4 opacity-90" />
+            <Search className="h-12 w-12 mx-auto mb-4 text-gray-600" />
             <h1 className="text-4xl font-bold mb-4">Search Results</h1>
             {query && (
-              <p className="text-xl opacity-90">
+              <p className="text-xl text-gray-700">
                 Showing results for: <span className="font-semibold">"{query}"</span>
               </p>
             )}

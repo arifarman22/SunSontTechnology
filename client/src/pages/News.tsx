@@ -29,12 +29,12 @@ export default function News() {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-[#049fd9] text-white py-24 mt-[104px]">
+      <section className="bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 text-gray-900 py-24 mt-[104px]">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="text-sm font-semibold mb-4 uppercase tracking-wider opacity-90">Latest Updates</div>
+            <div className="text-sm font-semibold mb-4 uppercase tracking-wider text-gray-600">Latest Updates</div>
             <h1 className="text-5xl lg:text-6xl font-bold mb-6">News & Insights</h1>
-            <p className="text-xl opacity-90 mb-8">
+            <p className="text-xl text-gray-700 mb-8">
               Stay updated with the latest news, product launches, and industry insights from Sunson Technology
             </p>
           </div>
