@@ -66,7 +66,7 @@ export default function SolutionsMegaDropdown({ isOpen, onClose }: SolutionsMega
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                       {solution.description}
                     </p>
-                    <div className="flex items-center text-[#049fd9] text-sm font-semibold">
+                    <div className="inline-flex items-center border-2 border-black text-black text-sm font-semibold px-3 py-1.5 rounded-full group-hover:bg-black group-hover:text-white transition-all">
                       <span>Learn more</span>
                       <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </div>

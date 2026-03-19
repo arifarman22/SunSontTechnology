@@ -76,7 +76,7 @@ export default function AboutSection() {
                 Our commitment to quality, security, and innovation has made us a trusted partner for organizations worldwide, serving clients across 50+ countries with industry-leading products and solutions.
               </p>
               <Link href="/about">
-                <button className="flex items-center space-x-2 bg-[#049fd9] hover:bg-[#00bceb] text-white px-6 py-3 rounded font-semibold transition-colors" data-testid="button-learn-more">
+                <button className="flex items-center space-x-2 border-2 border-black text-black px-6 py-3 rounded-full font-semibold hover:bg-black hover:text-white transition-colors" data-testid="button-learn-more">
                   <span>Learn More About Us</span>
                   <ArrowRight className="h-5 w-5" />
                 </button>

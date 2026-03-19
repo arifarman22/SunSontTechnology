@@ -81,7 +81,7 @@ export default function News() {
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                       {post.content}
                     </p>
-                    <button className="text-[#049fd9] font-semibold text-sm hover:text-[#00bceb] transition-colors">
+                    <button className="border-2 border-black text-black font-semibold text-sm px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all">
                       Read More →
                     </button>
                   </div>

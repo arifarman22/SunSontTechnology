@@ -99,7 +99,7 @@ export default function ProductCategories() {
                       {category.title}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4">{category.description}</p>
-                    <div className="flex items-center text-[#049fd9] font-semibold text-sm group-hover:gap-2 transition-all">
+                    <div className="inline-flex items-center border-2 border-black text-black font-semibold text-sm px-4 py-2 rounded-full group-hover:bg-black group-hover:text-white transition-all">
                       <span>Learn more</span>
                       <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </div>

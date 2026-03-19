@@ -195,7 +195,7 @@ export default function HeroCarousel() {
                   </p>
                   <div className="flex space-x-4 pt-4">
                     <Link href={slide.ctaLink}>
-                      <button className="group flex items-center space-x-2 px-6 py-3 bg-[#049fd9] text-white font-semibold rounded hover:bg-[#00bceb] transition-all" data-testid="button-learn-more">
+                      <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-black text-black font-semibold rounded-full hover:bg-black hover:text-white transition-all" data-testid="button-learn-more">
                         <span>{slide.cta}</span>
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                       </button>
