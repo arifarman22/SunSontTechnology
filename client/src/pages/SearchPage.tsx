@@ -22,7 +22,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1]);
+    const params = new URLSearchParams(window.location.search);
     const q = params.get('q') || '';
     setQuery(q);
 

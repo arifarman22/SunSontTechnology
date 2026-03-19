@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Menu, X, ChevronDown, Search } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
 import SolutionsMegaDropdown from "./SolutionsMegaDropdown";
@@ -7,6 +7,7 @@ import CompanyMegaDropdown from "./CompanyMegaDropdown";
 import logoImage from '@/images/Logo.jpeg';
 
 export default function Navbar() {
+  const [, setLocation] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
@@ -63,7 +64,7 @@ export default function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
       setIsSearchOpen(false);
       setSearchQuery('');
     }
