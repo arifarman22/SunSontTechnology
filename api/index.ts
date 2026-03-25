@@ -45,9 +45,12 @@ async function ensureTablesExist() {
   await sql`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, category TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', specifications JSONB DEFAULT '{}')`;
   await sql`CREATE TABLE IF NOT EXISTS solutions (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', benefits JSONB DEFAULT '[]')`;
   await sql`CREATE TABLE IF NOT EXISTS hero_slides (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT DEFAULT '', cta_link TEXT DEFAULT '', theme VARCHAR(50) NOT NULL)`;
-  await sql`ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS cta_link TEXT DEFAULT ''`;
   await sql`CREATE TABLE IF NOT EXISTS news_posts (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
   await sql`CREATE TABLE IF NOT EXISTS company_info (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, about TEXT, mission TEXT, vision TEXT, values JSONB DEFAULT '[]', stats JSONB DEFAULT '{}')`;
+  
+  try {
+    await sql`ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS cta_link TEXT DEFAULT ''`;
+  } catch (e) {}
   
   const existingUser = await sql`SELECT * FROM users WHERE username = 'SunsonTech'`;
   if (existingUser.length === 0 && process.env.ADMIN_PASSWORD) {

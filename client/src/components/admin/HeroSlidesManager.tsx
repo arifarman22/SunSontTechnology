@@ -50,7 +50,7 @@ export default function HeroSlidesManager() {
     img.onload = () => {
       const canvas = document.createElement('canvas');
       let { width, height } = img;
-      const MAX = 1280;
+      const MAX = 1024;
 
       if (width > MAX || height > MAX) {
         const ratio = Math.min(MAX / width, MAX / height);
@@ -62,16 +62,16 @@ export default function HeroSlidesManager() {
       canvas.height = height;
       canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
 
-      let quality = 0.6;
+      let quality = 0.5;
       let result = canvas.toDataURL('image/jpeg', quality);
 
-      while (result.length > 2 * 1024 * 1024 && quality > 0.1) {
+      while (result.length > 500 * 1024 && quality > 0.1) {
         quality -= 0.1;
         result = canvas.toDataURL('image/jpeg', quality);
       }
 
-      if (result.length > 3 * 1024 * 1024) {
-        alert('Image is too large. Please use a smaller image.');
+      if (result.length > 1 * 1024 * 1024) {
+        alert('Image is too large even after compression. Please use a smaller image.');
         return;
       }
 
