@@ -49,11 +49,27 @@ export default function HeroSlidesManager() {
       alert('Image must be under 5MB');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFormData(prev => ({ ...prev, image: reader.result as string }));
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1920;
+      const MAX_HEIGHT = 1080;
+      let { width, height } = img;
+
+      if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+        const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      setFormData(prev => ({ ...prev, image: compressed }));
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,8 +172,7 @@ export default function HeroSlidesManager() {
                 )}
               </div>
 
-              <Input placeholder="Button Text (e.g. Learn More)" value={formData.cta} onChange={(e) => setFormData({ ...formData, cta: e.target.value })} required />
-              <Input placeholder="Button Link (e.g. /products/banking)" value={formData.ctaLink} onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })} required />
+
               <div>
                 <label className="text-sm font-medium mb-1 block">Theme</label>
                 <Select value={formData.theme} onValueChange={(val) => setFormData({ ...formData, theme: val })}>
