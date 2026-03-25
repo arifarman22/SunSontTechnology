@@ -44,7 +44,8 @@ async function ensureTablesExist() {
   await sql`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, username VARCHAR(255) UNIQUE NOT NULL, password TEXT NOT NULL, role VARCHAR(50) NOT NULL DEFAULT 'user')`;
   await sql`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, category TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', specifications JSONB DEFAULT '{}')`;
   await sql`CREATE TABLE IF NOT EXISTS solutions (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', benefits JSONB DEFAULT '[]')`;
-  await sql`CREATE TABLE IF NOT EXISTS hero_slides (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT NOT NULL, theme VARCHAR(50) NOT NULL)`;
+  await sql`CREATE TABLE IF NOT EXISTS hero_slides (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT DEFAULT '', cta_link TEXT DEFAULT '', theme VARCHAR(50) NOT NULL)`;
+  await sql`ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS cta_link TEXT DEFAULT ''`;
   await sql`CREATE TABLE IF NOT EXISTS news_posts (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
   await sql`CREATE TABLE IF NOT EXISTS company_info (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, about TEXT, mission TEXT, vision TEXT, values JSONB DEFAULT '[]', stats JSONB DEFAULT '{}')`;
   
@@ -57,7 +58,7 @@ async function ensureTablesExist() {
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Health check
 app.get('/api', (req, res) => {
@@ -272,8 +273,52 @@ app.delete('/api/news/:id', authMiddleware, adminOnly, async (req: AuthRequest, 
 // Hero slides routes
 app.get('/api/hero-slides', async (req, res) => {
   try {
-    const slides = await sql`SELECT * FROM hero_slides ORDER BY id`;
+    await ensureTablesExist();
+    const slides = await sql`SELECT *, cta_link AS "ctaLink" FROM hero_slides ORDER BY id`;
     res.json(slides);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/hero-slides', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
+  try {
+    await ensureTablesExist();
+    const { title, subtitle, description, image, cta, ctaLink, theme } = req.body;
+    const result = await sql`
+      INSERT INTO hero_slides (title, subtitle, description, image, cta, cta_link, theme)
+      VALUES (${title}, ${subtitle}, ${description}, ${image}, ${cta || ''}, ${ctaLink || ''}, ${theme})
+      RETURNING *, cta_link AS "ctaLink"
+    `;
+    res.status(201).json(result[0]);
+  } catch (error: any) {
+    console.error('Hero slide creation error:', error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.put('/api/hero-slides/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
+  try {
+    const { title, subtitle, description, image, cta, ctaLink, theme } = req.body;
+    const result = await sql`
+      UPDATE hero_slides
+      SET title = ${title}, subtitle = ${subtitle}, description = ${description},
+          image = ${image}, cta = ${cta || ''}, cta_link = ${ctaLink || ''}, theme = ${theme}
+      WHERE id = ${req.params.id}
+      RETURNING *, cta_link AS "ctaLink"
+    `;
+    if (result.length === 0) return res.status(404).json({ message: 'Hero slide not found' });
+    res.json(result[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.delete('/api/hero-slides/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
+  try {
+    const result = await sql`DELETE FROM hero_slides WHERE id = ${req.params.id} RETURNING id`;
+    if (result.length === 0) return res.status(404).json({ message: 'Hero slide not found' });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
