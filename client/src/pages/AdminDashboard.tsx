@@ -6,14 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ProductsManager from '@/components/admin/ProductsManager';
 import SolutionsManager from '@/components/admin/SolutionsManager';
 import NewsManager from '@/components/admin/NewsManager';
-import { Package, Lightbulb, Newspaper, LogOut } from 'lucide-react';
+import HeroSlidesManager from '@/components/admin/HeroSlidesManager';
+import { Package, Lightbulb, Newspaper, Image, LogOut } from 'lucide-react';
 
 const API_BASE_URL = 'https://www.sunson-tech.com/api';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [user, setUser] = useState<any>(null);
-  const [stats, setStats] = useState({ products: 0, solutions: 0, news: 0 });
+  const [stats, setStats] = useState({ products: 0, solutions: 0, news: 0, heroSlides: 0 });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -30,15 +31,17 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [products, solutions, news] = await Promise.all([
+      const [products, solutions, news, heroSlides] = await Promise.all([
         fetch(`${API_BASE_URL}/products`).then(r => r.json()),
         fetch(`${API_BASE_URL}/solutions`).then(r => r.json()),
-        fetch(`${API_BASE_URL}/news`).then(r => r.json())
+        fetch(`${API_BASE_URL}/news`).then(r => r.json()),
+        fetch(`${API_BASE_URL}/hero-slides`).then(r => r.json())
       ]);
       setStats({
         products: Array.isArray(products) ? products.length : 0,
         solutions: Array.isArray(solutions) ? solutions.length : 0,
-        news: Array.isArray(news) ? news.length : 0
+        news: Array.isArray(news) ? news.length : 0,
+        heroSlides: Array.isArray(heroSlides) ? heroSlides.length : 0
       });
     } catch (error) {
       console.error('Failed to fetch stats:', error);
@@ -79,7 +82,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -121,6 +124,20 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Hero Slides</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">{stats.heroSlides}</p>
+                  </div>
+                  <div className="p-3 bg-orange-50 rounded-lg">
+                    <Image className="w-6 h-6 text-orange-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -130,7 +147,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="products" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="products">
                   <Package className="w-4 h-4 mr-2" />
                   Products
@@ -142,6 +159,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="news">
                   <Newspaper className="w-4 h-4 mr-2" />
                   News
+                </TabsTrigger>
+                <TabsTrigger value="hero">
+                  <Image className="w-4 h-4 mr-2" />
+                  Hero Slides
                 </TabsTrigger>
               </TabsList>
 
@@ -155,6 +176,10 @@ export default function AdminDashboard() {
 
               <TabsContent value="news" className="mt-6">
                 <NewsManager />
+              </TabsContent>
+
+              <TabsContent value="hero" className="mt-6">
+                <HeroSlidesManager />
               </TabsContent>
             </Tabs>
           </CardContent>

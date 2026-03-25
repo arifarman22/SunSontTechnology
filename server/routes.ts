@@ -7,6 +7,17 @@ import bcrypt from "bcryptjs";
 import { authMiddleware, adminOnly, generateToken, type AuthRequest } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Run DB migration for cta_link column
+  if (process.env.DATABASE_URL) {
+    try {
+      const { neon } = await import('@neondatabase/serverless');
+      const sql = neon(process.env.DATABASE_URL);
+      await sql`ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS cta_link TEXT DEFAULT ''`;
+    } catch (e) {
+      // Column may already exist or table doesn't exist yet - safe to ignore
+    }
+  }
+
   // Health check endpoint
   app.get("/", (req, res) => {
     res.json({ 

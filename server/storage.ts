@@ -28,6 +28,7 @@ export interface HeroSlide {
   description: string;
   image: string;
   cta: string;
+  ctaLink: string;
   theme: string;
 }
 

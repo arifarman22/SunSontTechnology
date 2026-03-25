@@ -3,7 +3,18 @@ import { ChevronLeft, ChevronRight, ArrowRight, Globe } from "lucide-react";
 import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
 
-const slides = [
+interface Slide {
+  id: string | number;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  cta: string;
+  ctaLink: string;
+  theme: string;
+}
+
+const defaultSlides: Slide[] = [
   {
     id: 1,
     title: "Powering the Future of Banking",
@@ -46,10 +57,13 @@ const slides = [
   }
 ];
 
+const API_BASE_URL = 'https://www.sunson-tech.com/api';
+
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [slides, setSlides] = useState<Slide[]>(defaultSlides);
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -73,6 +87,15 @@ export default function HeroCarousel() {
     { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
     { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
   ];
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/hero-slides`)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) setSlides(data);
+      })
+      .catch(() => {});
+  }, []);
 
   const changeLanguage = (langCode: string) => {
     // Wait for Google Translate to load
@@ -106,6 +129,11 @@ export default function HeroCarousel() {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+  }, [emblaApi, slides]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -194,7 +222,7 @@ export default function HeroCarousel() {
                     {slide.description}
                   </p>
                   <div className="flex space-x-4 pt-4">
-                    <Link href={slide.ctaLink}>
+                    <Link href={slide.ctaLink || (slide as any).cta_link || '/'}>
                       <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-black text-black font-semibold rounded-full hover:bg-black hover:text-white transition-all" data-testid="button-learn-more">
                         <span>{slide.cta}</span>
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />

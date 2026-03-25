@@ -116,22 +116,22 @@ export class DbStorage implements IStorage {
   }
 
   async getHeroSlides(): Promise<HeroSlide[]> {
-    const slides = await sql`SELECT * FROM hero_slides ORDER BY title`;
+    const slides = await sql`SELECT *, cta_link AS "ctaLink" FROM hero_slides ORDER BY title`;
     return slides as HeroSlide[];
   }
 
   async getHeroSlide(id: string): Promise<HeroSlide | undefined> {
-    const [slide] = await sql`SELECT * FROM hero_slides WHERE id = ${id}`;
+    const [slide] = await sql`SELECT *, cta_link AS "ctaLink" FROM hero_slides WHERE id = ${id}`;
     return slide as HeroSlide | undefined;
   }
 
   async createHeroSlide(slide: Omit<HeroSlide, 'id'>): Promise<HeroSlide> {
     const id = randomUUID();
     const [newSlide] = await sql`
-      INSERT INTO hero_slides (id, title, subtitle, description, image, cta, theme)
+      INSERT INTO hero_slides (id, title, subtitle, description, image, cta, cta_link, theme)
       VALUES (${id}, ${slide.title}, ${slide.subtitle}, ${slide.description},
-              ${slide.image}, ${slide.cta}, ${slide.theme})
-      RETURNING *
+              ${slide.image}, ${slide.cta}, ${slide.ctaLink || ''}, ${slide.theme})
+      RETURNING *, cta_link AS "ctaLink"
     `;
     return newSlide as HeroSlide;
   }
@@ -148,9 +148,10 @@ export class DbStorage implements IStorage {
           description = ${updated.description}, 
           image = ${updated.image}, 
           cta = ${updated.cta}, 
+          cta_link = ${updated.ctaLink || ''},
           theme = ${updated.theme}
       WHERE id = ${id}
-      RETURNING *
+      RETURNING *, cta_link AS "ctaLink"
     `;
     return result as HeroSlide | undefined;
   }

@@ -40,8 +40,14 @@ async function initDatabase() {
         description TEXT NOT NULL,
         image TEXT NOT NULL,
         cta TEXT NOT NULL,
+        cta_link TEXT DEFAULT '',
         theme TEXT NOT NULL
       )
+    `;
+
+    // Add cta_link column if it doesn't exist
+    await sql`
+      ALTER TABLE hero_slides ADD COLUMN IF NOT EXISTS cta_link TEXT DEFAULT ''
     `;
     console.log('✅ Hero slides table created');
 
