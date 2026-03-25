@@ -45,20 +45,15 @@ export default function HeroSlidesManager() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image must be under 5MB');
-      return;
-    }
 
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const MAX_WIDTH = 1920;
-      const MAX_HEIGHT = 1080;
       let { width, height } = img;
+      const MAX = 1280;
 
-      if (width > MAX_WIDTH || height > MAX_HEIGHT) {
-        const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+      if (width > MAX || height > MAX) {
+        const ratio = Math.min(MAX / width, MAX / height);
         width = Math.round(width * ratio);
         height = Math.round(height * ratio);
       }
@@ -66,8 +61,22 @@ export default function HeroSlidesManager() {
       canvas.width = width;
       canvas.height = height;
       canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
-      const compressed = canvas.toDataURL('image/jpeg', 0.7);
-      setFormData(prev => ({ ...prev, image: compressed }));
+
+      let quality = 0.6;
+      let result = canvas.toDataURL('image/jpeg', quality);
+
+      while (result.length > 2 * 1024 * 1024 && quality > 0.1) {
+        quality -= 0.1;
+        result = canvas.toDataURL('image/jpeg', quality);
+      }
+
+      if (result.length > 3 * 1024 * 1024) {
+        alert('Image is too large. Please use a smaller image.');
+        return;
+      }
+
+      setFormData(prev => ({ ...prev, image: result }));
+      URL.revokeObjectURL(img.src);
     };
     img.src = URL.createObjectURL(file);
   };
