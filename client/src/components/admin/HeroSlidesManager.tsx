@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, X } from 'lucide-react';
 
 const API_BASE_URL = 'https://www.sunson-tech.com/api';
 
@@ -26,6 +27,7 @@ export default function HeroSlidesManager() {
   const [formData, setFormData] = useState({
     title: '', subtitle: '', description: '', image: '', cta: '', ctaLink: '', theme: 'dark'
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchSlides = async () => {
     try {
@@ -34,15 +36,32 @@ export default function HeroSlidesManager() {
       const data = await res.json();
       setSlides(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching hero slides:', error);
       setSlides([]);
     }
   };
 
   useEffect(() => { fetchSlides(); }, []);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be under 5MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData(prev => ({ ...prev, image: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.image) {
+      alert('Please upload an image');
+      return;
+    }
     const token = localStorage.getItem('token');
     const url = editing ? `${API_BASE_URL}/hero-slides/${editing.id}` : `${API_BASE_URL}/hero-slides`;
     const method = editing ? 'PUT' : 'POST';
@@ -62,7 +81,7 @@ export default function HeroSlidesManager() {
       setEditing(null);
       resetForm();
       fetchSlides();
-    } catch (error) {
+    } catch {
       alert('Failed to save hero slide');
     }
   };
@@ -79,6 +98,7 @@ export default function HeroSlidesManager() {
 
   const resetForm = () => {
     setFormData({ title: '', subtitle: '', description: '', image: '', cta: '', ctaLink: '', theme: 'dark' });
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const openEdit = (slide: HeroSlide) => {
@@ -106,8 +126,36 @@ export default function HeroSlidesManager() {
               <Input placeholder="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <Input placeholder="Subtitle" value={formData.subtitle} onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })} required />
               <Textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required />
-              <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
-              {formData.image && <img src={formData.image} alt="Preview" className="w-full h-40 object-cover rounded" />}
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Banner Image</label>
+                {formData.image ? (
+                  <div className="relative">
+                    <img src={formData.image} alt="Preview" className="w-full h-40 object-cover rounded border" />
+                    <button
+                      type="button"
+                      onClick={() => { setFormData({ ...formData, image: '' }); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-[#049fd9] transition-colors">
+                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Click to upload image</span>
+                    <span className="text-xs text-gray-400 mt-1">JPG, PNG, GIF (max 5MB)</span>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+
               <Input placeholder="Button Text (e.g. Learn More)" value={formData.cta} onChange={(e) => setFormData({ ...formData, cta: e.target.value })} required />
               <Input placeholder="Button Link (e.g. /products/banking)" value={formData.ctaLink} onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })} required />
               <div>
