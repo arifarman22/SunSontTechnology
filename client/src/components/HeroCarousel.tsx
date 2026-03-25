@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight, Globe } from "lucide-react";
 import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
+import banner1 from "@/images/banner1.jpeg";
+import banner2 from "@/images/banner2.jpeg";
 
 interface Slide {
   id: string | number;
@@ -20,7 +22,7 @@ const defaultSlides: Slide[] = [
     title: "Powering the Future of Banking",
     subtitle: "Advanced ATM and CDM Solutions",
     description: "Transform your banking operations with our intelligent cash management systems designed for security, efficiency, and customer satisfaction.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    image: banner1,
     cta: "Explore Banking Solutions",
     ctaLink: "/products/banking",
     theme: "dark"
@@ -30,30 +32,10 @@ const defaultSlides: Slide[] = [
     title: "Healthcare Innovation at Your Fingertips",
     subtitle: "Smart Kiosk Solutions for Modern Healthcare",
     description: "Streamline patient check-ins, reduce wait times, and enhance healthcare delivery with our cutting-edge self-service kiosks.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    image: banner2,
     cta: "Discover Healthcare Tech",
     ctaLink: "/products/healthcare",
-    theme: "light"
-  },
-  {
-    id: 3,
-    title: "Secure Payment Infrastructure",
-    subtitle: "PCI-Compliant Security Solutions",
-    description: "Protect your transactions with our certified encryption pin pads and full metal keyboards built for maximum security.",
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    cta: "View Security Products",
-    ctaLink: "/products/security",
     theme: "dark"
-  },
-  {
-    id: 4,
-    title: "Next-Generation Self-Service",
-    subtitle: "Customizable Kiosk Solutions",
-    description: "From payment terminals to information kiosks, we deliver tailored solutions that enhance customer experience across industries.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    cta: "Learn More",
-    ctaLink: "/about",
-    theme: "light"
   }
 ];
 
