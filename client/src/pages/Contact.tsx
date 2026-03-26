@@ -81,19 +81,19 @@ export default function Contact() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <h4 className="font-semibold text-gray-900 mb-2">Sales Team</h4>
-                <p className="text-sm text-gray-600">Monday - Friday<br />8:00 AM - 6:00 PM EST</p>
+                <p className="text-sm text-gray-600">Monday - Friday<br />8:30 AM - 6:00 PM CST</p>
               </div>
               <div className="text-center">
                 <h4 className="font-semibold text-gray-900 mb-2">Technical Support</h4>
-                <p className="text-sm text-gray-600">Monday - Friday<br />7:00 AM - 8:00 PM EST</p>
+                <p className="text-sm text-gray-600">Monday - Friday<br />8:30 AM - 6:00 PM CST</p>
               </div>
               <div className="text-center">
                 <h4 className="font-semibold text-gray-900 mb-2">Emergency Support</h4>
                 <p className="text-sm text-gray-600">24/7<br />Critical Issues Only</p>
               </div>
               <div className="text-center">
-                <h4 className="font-semibold text-gray-900 mb-2">International</h4>
-                <p className="text-sm text-gray-600">Follow Local<br />Business Hours</p>
+                <h4 className="font-semibold text-gray-900 mb-2">General Inquiry</h4>
+                <p className="text-sm text-gray-600">Monday - Friday<br />8:30 AM - 6:00 PM CST</p>
               </div>
             </div>
           </div>
