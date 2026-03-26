@@ -75,7 +75,16 @@ export default function News() {
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                       {post.content}
                     </p>
-                    <button className="border-2 border-black text-black font-semibold text-sm px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all">
+                    <button
+                      onClick={() => {
+                        const w = window.open('', '_blank');
+                        if (w) {
+                          w.document.write(`<!DOCTYPE html><html><head><title>${post.title}</title><style>body{font-family:system-ui,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#333}h1{color:#111}img{width:100%;border-radius:8px;margin-bottom:24px}.author{color:#666;font-size:14px;margin-bottom:24px}.content{line-height:1.8;font-size:16px}</style></head><body><img src="${post.image}" alt="${post.title}"/><h1>${post.title}</h1><p class="author">By ${post.author}</p><div class="content">${post.content}</div></body></html>`);
+                          w.document.close();
+                        }
+                      }}
+                      className="border-2 border-black text-black font-semibold text-sm px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all"
+                    >
                       Read More →
                     </button>
                   </div>
