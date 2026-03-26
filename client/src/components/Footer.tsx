@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
-import logoImage from '@/images/Logo.jpeg';
+import logoImage from '@/images/logofooter.png';
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export default function Footer() {

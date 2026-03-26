@@ -4,7 +4,7 @@ import { Menu, X, ChevronDown, Search } from "lucide-react";
 import MegaDropdown from "./MegaDropdown";
 import SolutionsMegaDropdown from "./SolutionsMegaDropdown";
 import CompanyMegaDropdown from "./CompanyMegaDropdown";
-import logoImage from '@/images/Logo.jpeg';
+import logoImage from '@/images/logomain.png';
 
 export default function Navbar() {
   const [, setLocation] = useLocation();
