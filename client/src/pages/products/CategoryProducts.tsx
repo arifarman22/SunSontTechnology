@@ -76,50 +76,69 @@ export default function CategoryProducts() {
             <div className="text-center py-20">
               <p className="text-gray-600 text-lg">No products available in this category yet.</p>
             </div>
-          ) : (
-            <div className="grid lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-200">
-                  <div className="aspect-square overflow-hidden">
-                    <img 
-                      src={product.image} 
-                      alt={product.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <div className="mb-2">
-                      <h3 className="text-lg font-bold text-gray-900 line-clamp-2">{product.title}</h3>
-                      <span className="text-xs bg-[#049fd9]/10 text-[#049fd9] px-2 py-0.5 rounded-full font-semibold inline-block mt-1">
-                        {product.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-3 line-clamp-2">{product.description}</p>
-                    
-                    {product.features && product.features.length > 0 && (
-                      <div className="mb-3">
-                        <h4 className="font-semibold text-gray-900 mb-2 text-sm">Key Features</h4>
-                        <ul className="space-y-1">
-                          {product.features.slice(0, 3).map((feature, index) => (
-                            <li key={index} className="flex items-center text-xs text-gray-600">
-                              <div className="w-1.5 h-1.5 bg-[#049fd9] rounded-full mr-2 flex-shrink-0"></div>
-                              <span className="line-clamp-1">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+          ) : (() => {
+            const grouped: Record<string, Product[]> = {};
+            products.forEach(p => {
+              const sub = (p as any).subcategory || 'Other';
+              if (!grouped[sub]) grouped[sub] = [];
+              grouped[sub].push(p);
+            });
+            const hasSubcategories = Object.keys(grouped).length > 1 || !grouped['Other'];
+
+            return (
+              <div className="space-y-12">
+                {Object.entries(grouped).map(([subcategory, items]) => (
+                  <div key={subcategory}>
+                    {hasSubcategories && (
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-3">{subcategory}</h2>
                     )}
-                    
-                    <Link href={`/products/${category}/${product.id}`}>
-                      <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
-                        View Details
-                      </Button>
-                    </Link>
+                    <div className="grid lg:grid-cols-3 gap-6">
+                      {items.map((product) => (
+                        <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-200">
+                          <div className="aspect-square overflow-hidden">
+                            <img 
+                              src={product.image} 
+                              alt={product.title}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div className="p-3">
+                            <div className="mb-2">
+                              <h3 className="text-lg font-bold text-gray-900 line-clamp-2">{product.title}</h3>
+                              <span className="text-xs bg-[#049fd9]/10 text-[#049fd9] px-2 py-0.5 rounded-full font-semibold inline-block mt-1">
+                                {(product as any).subcategory || product.category}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+                            
+                            {product.features && product.features.length > 0 && (
+                              <div className="mb-3">
+                                <h4 className="font-semibold text-gray-900 mb-2 text-sm">Key Features</h4>
+                                <ul className="space-y-1">
+                                  {product.features.slice(0, 3).map((feature, index) => (
+                                    <li key={index} className="flex items-center text-xs text-gray-600">
+                                      <div className="w-1.5 h-1.5 bg-[#049fd9] rounded-full mr-2 flex-shrink-0"></div>
+                                      <span className="line-clamp-1">{feature}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            
+                            <Link href={`/products/${category}/${product.id}`}>
+                              <Button className="w-full bg-[#049fd9] hover:bg-[#00bceb] text-sm py-1 h-auto">
+                                View Details
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            );
+          })()}}
         </div>
       </section>
 

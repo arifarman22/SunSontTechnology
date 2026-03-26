@@ -42,7 +42,8 @@ const sql = neon(process.env.DATABASE_URL || '');
 
 async function ensureTablesExist() {
   await sql`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, username VARCHAR(255) UNIQUE NOT NULL, password TEXT NOT NULL, role VARCHAR(50) NOT NULL DEFAULT 'user')`;
-  await sql`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, category TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', specifications JSONB DEFAULT '{}')`;
+  await sql`CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, category TEXT NOT NULL, subcategory TEXT DEFAULT '', image TEXT NOT NULL, features JSONB DEFAULT '[]', specifications JSONB DEFAULT '{}')`;
+  try { await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS subcategory TEXT DEFAULT ''`; } catch (e) {}
   await sql`CREATE TABLE IF NOT EXISTS solutions (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', benefits JSONB DEFAULT '[]')`;
   await sql`CREATE TABLE IF NOT EXISTS hero_slides (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT DEFAULT '', cta_link TEXT DEFAULT '', theme VARCHAR(50) NOT NULL)`;
   await sql`CREATE TABLE IF NOT EXISTS news_posts (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
@@ -102,7 +103,7 @@ app.get('/api/products', async (req, res) => {
     
     await ensureTablesExist();
     
-    const products = await sql`SELECT * FROM products ORDER BY title`;
+    const products = await sql`SELECT * FROM products ORDER BY category, subcategory, title`;
     const parsed = products.map(p => ({
       ...p,
       features: typeof p.features === 'string' ? JSON.parse(p.features) : p.features,
@@ -118,10 +119,10 @@ app.get('/api/products', async (req, res) => {
 app.post('/api/products', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
     await ensureTablesExist();
-    const { title, description, category, image, features, specifications } = req.body;
+    const { title, description, category, subcategory, image, features, specifications } = req.body;
     const result = await sql`
-      INSERT INTO products (title, description, category, image, features, specifications)
-      VALUES (${title}, ${description}, ${category}, ${image}, ${JSON.stringify(features || [])}, ${JSON.stringify(specifications || {})})
+      INSERT INTO products (title, description, category, subcategory, image, features, specifications)
+      VALUES (${title}, ${description}, ${category}, ${subcategory || ''}, ${image}, ${JSON.stringify(features || [])}, ${JSON.stringify(specifications || {})})
       RETURNING *
     `;
     res.status(201).json(result[0]);
@@ -133,11 +134,11 @@ app.post('/api/products', authMiddleware, adminOnly, async (req: AuthRequest, re
 
 app.put('/api/products/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
-    const { title, description, category, image, features, specifications } = req.body;
+    const { title, description, category, subcategory, image, features, specifications } = req.body;
     const result = await sql`
       UPDATE products
       SET title = ${title}, description = ${description}, category = ${category},
-          image = ${image}, features = ${JSON.stringify(features || [])},
+          subcategory = ${subcategory || ''}, image = ${image}, features = ${JSON.stringify(features || [])},
           specifications = ${JSON.stringify(specifications || {})}
       WHERE id = ${req.params.id}
       RETURNING *

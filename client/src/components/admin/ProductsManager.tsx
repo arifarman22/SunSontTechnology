@@ -8,11 +8,22 @@ import type { Product } from '@/lib/api';
 
 const API_BASE_URL = 'https://www.sunson-tech.com/api';
 
+const subcategories: Record<string, string[]> = {
+  Banking: ['Cash Deposit Machine', 'Cash Dispenser ATM', 'Smart Teller Machine', 'Currency Exchange Kiosk'],
+  Healthcare: ['Health Screening Kiosk', 'Hospital Check-in Kiosk', 'Mobile Charging Station', 'Hotel Check-in Kiosk'],
+  EPP: ['PCI Approved EPP', 'Full Metal Keyboard', 'NON PCI Pinpad'],
+  Retail: ['Self-Service Kiosk', 'Information Kiosk', 'Digital Signage'],
+  Payments: ['Bitcoin Payment Kiosk', 'Cash Payment Kiosk', 'Wall Mount Payment Kiosk', 'Cashless Payment Kiosk'],
+  Transportation: ['Ticket Vending Kiosk', 'Card Dispenser Kiosk', 'Card Top-up Kiosk', 'Parking Payment Kiosk'],
+  Information: ['Information Kiosk', 'Digital Signage', 'Way Finding Solutions', 'Queuing System'],
+  Other: ['Custom Solution'],
+};
+
 export default function ProductsManager() {
   const [products, setProducts] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState({ title: '', description: '', category: '', image: '', features: [] as string[], specifications: {} as Record<string, string> });
+  const [formData, setFormData] = useState({ title: '', description: '', category: '', subcategory: '', image: '', features: [] as string[], specifications: {} as Record<string, string> });
   const [newFeature, setNewFeature] = useState('');
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
@@ -64,7 +75,7 @@ export default function ProductsManager() {
 
       setOpen(false);
       setEditingProduct(null);
-      setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} });
+      setFormData({ title: '', description: '', category: '', subcategory: '', image: '', features: [], specifications: {} });
       fetchProducts();
     } catch (error) {
       console.error('Submit error:', error);
@@ -89,6 +100,7 @@ export default function ProductsManager() {
       title: product.title,
       description: product.description,
       category: product.category,
+      subcategory: (product as any).subcategory || '',
       image: product.image,
       features: product.features || [],
       specifications: product.specifications || {},
@@ -102,7 +114,7 @@ export default function ProductsManager() {
         <h2 className="text-2xl font-bold">Products</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', category: '', image: '', features: [], specifications: {} }); }}>
+            <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', category: '', subcategory: '', image: '', features: [], specifications: {} }); }}>
               Add Product
             </Button>
           </DialogTrigger>
@@ -144,7 +156,7 @@ export default function ProductsManager() {
                     <select 
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                       value={formData.category} 
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })} 
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value, subcategory: '' })} 
                       required
                     >
                       <option value="">-- Select a Category --</option>
@@ -153,10 +165,29 @@ export default function ProductsManager() {
                       <option value="EPP">EPP Security</option>
                       <option value="Retail">Retail Solutions</option>
                       <option value="Payments">Payment Systems</option>
+                      <option value="Transportation">Transportation</option>
+                      <option value="Information">Information Systems</option>
                       <option value="Other">Other Products</option>
                     </select>
-                    <p className="text-xs text-gray-500 mt-1">Products will be grouped by category on the website</p>
                   </div>
+
+                  {formData.category && subcategories[formData.category] && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory *</label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                        value={formData.subcategory}
+                        onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+                        required
+                      >
+                        <option value="">-- Select a Subcategory --</option>
+                        {subcategories[formData.category].map((sub) => (
+                          <option key={sub} value={sub}>{sub}</option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">Products will be grouped by subcategory within the category page</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -277,6 +308,11 @@ export default function ProductsManager() {
                   <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
                     {product.category}
                   </span>
+                  {(product as any).subcategory && (
+                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full ml-2">
+                      {(product as any).subcategory}
+                    </span>
+                  )}
                 </div>
                 {product.image && (
                   <img src={product.image} alt={product.title} className="w-20 h-20 object-cover rounded-lg ml-4" />
