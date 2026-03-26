@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import useEmblaCarousel from "embla-carousel-react";
 import banner1 from "@/images/banner1.jpeg";
 import banner2 from "@/images/banner2.jpeg";
+import banner3 from "@/images/banner3.jpeg";
 
 interface Slide {
   id: string | number;
@@ -35,6 +36,16 @@ const defaultSlides: Slide[] = [
     image: banner2,
     cta: "Discover Healthcare Tech",
     ctaLink: "/products/healthcare",
+    theme: "dark"
+  },
+  {
+    id: 3,
+    title: "Secure Payment Infrastructure",
+    subtitle: "PCI-Compliant Security Solutions",
+    description: "Protect your transactions with our certified encryption pin pads and full metal keyboards built for maximum security.",
+    image: banner3,
+    cta: "View Security Products",
+    ctaLink: "/products/security",
     theme: "dark"
   }
 ];
@@ -205,17 +216,13 @@ export default function HeroCarousel() {
                   </p>
                   <div className="flex space-x-4 pt-4">
                     <Link href={slide.ctaLink || (slide as any).cta_link || '/'}>
-                      <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-black text-black font-semibold rounded-full hover:bg-black hover:text-white transition-all" data-testid="button-learn-more">
+                      <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-black transition-all" data-testid="button-learn-more">
                         <span>{slide.cta}</span>
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                       </button>
                     </Link>
                     <Link href="/contact">
-                      <button className={`px-6 py-3 font-semibold rounded border-2 transition-all ${
-                        slide.theme === 'dark'
-                          ? 'border-white text-white hover:bg-white hover:text-gray-900'
-                          : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
-                      }`} data-testid="button-view-specs">
+                      <button className={`px-6 py-3 font-semibold rounded border-2 transition-all border-white text-white hover:bg-white hover:text-black`} data-testid="button-view-specs">
                         Contact Sales
                       </button>
                     </Link>

@@ -34,12 +34,12 @@ export default function Contact() {
               <div className="w-16 h-16 bg-[#049fd9]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MapPin className="h-8 w-8 text-[#049fd9]" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Global Headquarters</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Headquarters</h3>
               <p className="text-gray-600 text-sm">
-                <strong>Technology Park</strong><br />
-                Innovation District<br />
-                Suite 1500<br />
-                Tech City, TC 12345
+                <strong>Shenzhen Sunson Tech Co., Ltd.</strong><br />
+                23rd Floor, Venture Investment Building<br />
+                Yuehai Street, Shenzhen Bay<br />
+                Nanshan District, Shenzhen, China
               </p>
             </div>
 
@@ -47,12 +47,12 @@ export default function Contact() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Factory className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Phone & Support</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Factory</h3>
               <p className="text-gray-600 text-sm">
-                Sales: +1 (555) 123-4567<br />
-                Support: +1 (555) 123-4568<br />
-                Toll Free: 1-800-SUNSON1<br />
-                Fax: +1 (555) 123-4569
+                <strong>Shenzhen Sunson Tech Co., Ltd.</strong><br />
+                5th Floor, Building 3, Phase II of Yangbei Industrial Park<br />
+                Hangcheng Subdistrict, Baoan Dist.<br />
+                Shenzhen, China
               </p>
             </div>
 
@@ -60,12 +60,12 @@ export default function Contact() {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Email & Online</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Email & Phone</h3>
               <p className="text-gray-600 text-sm">
                 Sales: sales@sunson-tech.com<br />
                 Support: support@sunson-tech.com<br />
-                General: info@sunson-tech.com<br />
-                Careers: careers@sunson-tech.com
+                Phone: +86 (755) 2647-0670<br />
+                Fax: +86 (755) 2647-0674
               </p>
             </div>
           </div>
