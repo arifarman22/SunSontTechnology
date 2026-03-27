@@ -183,6 +183,12 @@ export default function HeroSlidesManager() {
 
 
               <div>
+                <label className="text-sm font-medium mb-1 block">Button Link URL</label>
+                <Input placeholder="https://example.com or /products/banking" value={formData.ctaLink} onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })} />
+                <p className="text-xs text-gray-400 mt-1">The banner button will redirect to this link</p>
+              </div>
+
+              <div>
                 <label className="text-sm font-medium mb-1 block">Theme</label>
                 <Select value={formData.theme} onValueChange={(val) => setFormData({ ...formData, theme: val })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
@@ -213,7 +219,9 @@ export default function HeroSlidesManager() {
                 <p className="text-xs text-gray-400 mt-1 truncate">{slide.description}</p>
                 <div className="flex gap-2 mt-3">
                   <span className="text-xs bg-gray-100 px-2 py-1 rounded">{slide.theme}</span>
-                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded">{slide.cta}</span>
+                  {slide.ctaLink && (
+                    <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded truncate max-w-[200px]">{slide.ctaLink}</span>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2 flex-shrink-0">

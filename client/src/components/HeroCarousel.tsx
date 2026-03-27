@@ -215,12 +215,23 @@ export default function HeroCarousel() {
                     {slide.description}
                   </p>
                   <div className="flex space-x-4 pt-4">
-                    <Link href={slide.ctaLink || (slide as any).cta_link || '/'}>
-                      <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-black transition-all" data-testid="button-learn-more">
-                        <span>{slide.cta}</span>
-                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    </Link>
+                    {(slide.ctaLink || (slide as any).cta_link) ? (
+                      ((slide.ctaLink || (slide as any).cta_link || '').startsWith('http')) ? (
+                        <a href={slide.ctaLink || (slide as any).cta_link} target="_blank" rel="noopener noreferrer">
+                          <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-black transition-all" data-testid="button-learn-more">
+                            <span>{slide.cta || 'Learn More'}</span>
+                            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                          </button>
+                        </a>
+                      ) : (
+                        <Link href={slide.ctaLink || (slide as any).cta_link || '/'}>
+                          <button className="group flex items-center space-x-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-black transition-all" data-testid="button-learn-more">
+                            <span>{slide.cta || 'Learn More'}</span>
+                            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                          </button>
+                        </Link>
+                      )
+                    ) : null}
                     <Link href="/contact">
                       <button className={`px-6 py-3 font-semibold rounded border-2 transition-all border-white text-white hover:bg-white hover:text-black`} data-testid="button-view-specs">
                         Contact Sales
