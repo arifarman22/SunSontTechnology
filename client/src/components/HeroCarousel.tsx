@@ -40,12 +40,12 @@ const defaultSlides: Slide[] = [
   },
   {
     id: 3,
-    title: "Secure Payment Infrastructure",
-    subtitle: "PCI-Compliant Security Solutions",
-    description: "Protect your transactions with our certified encryption pin pads and full metal keyboards built for maximum security.",
+    title: "Experience Sunson in 360° VR",
+    subtitle: "360° VR TOUR: SHENZHEN OFFICE & FACTORY",
+    description: "Step inside Sunson with our immersive VR Panorama - a complete 360° tour of our Shenzhen office and factory.",
     image: banner3,
-    cta: "View Security Products",
-    ctaLink: "/products/security",
+    cta: "360° VR Experience →",
+    ctaLink: "https://vr.sunsonmall.com/",
     theme: "dark"
   }
 ];
