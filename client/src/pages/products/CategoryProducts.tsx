@@ -7,7 +7,7 @@ import { getProducts, type Product } from "@/lib/api";
 
 const categoryInfo: Record<string, { title: string; description: string }> = {
   Banking: {
-    title: "Banking Solutions",
+    title: "Banking",
     description: "Comprehensive self-service banking solutions for modern financial institutions."
   },
   Healthcare: {

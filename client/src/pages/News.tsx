@@ -97,7 +97,7 @@ export default function News() {
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-4 w-4" />
-                          <span>{timeAgo(featured.date)}</span>
+                          <span>{new Date(featured.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         </div>
                       </div>
                       <span className="inline-flex items-center gap-2 text-[#049fd9] font-semibold group-hover:gap-3 transition-all">
@@ -138,7 +138,7 @@ export default function News() {
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-3.5 w-3.5" />
-                          {timeAgo(post.date)}
+                          {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                         </span>
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#049fd9] transition-colors leading-snug">

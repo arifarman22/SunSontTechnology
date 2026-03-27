@@ -12,7 +12,7 @@ export default function NewsManager() {
   const [news, setNews] = useState<NewsPost[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<NewsPost | null>(null);
-  const [formData, setFormData] = useState({ title: '', content: '', image: '', author: '' });
+  const [formData, setFormData] = useState({ title: '', content: '', image: '', author: '', date: '' });
 
   const fetchNews = async () => {
     try {
@@ -44,7 +44,7 @@ export default function NewsManager() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ ...formData, date: new Date().toISOString() }),
+        body: JSON.stringify({ ...formData, date: formData.date || new Date().toISOString().split('T')[0] }),
       });
 
       if (!res.ok) {
@@ -55,7 +55,7 @@ export default function NewsManager() {
 
       setOpen(false);
       setEditing(null);
-      setFormData({ title: '', content: '', image: '', author: '' });
+      setFormData({ title: '', content: '', image: '', author: '', date: '' });
       fetchNews();
     } catch (error) {
       console.error('Submit error:', error);
@@ -80,7 +80,7 @@ export default function NewsManager() {
         <h2 className="text-2xl font-bold">News</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { setEditing(null); setFormData({ title: '', content: '', image: '', author: '' }); }}>
+            <Button onClick={() => { setEditing(null); setFormData({ title: '', content: '', image: '', author: '', date: '' }); }}>
               Add News
             </Button>
           </DialogTrigger>
@@ -94,6 +94,10 @@ export default function NewsManager() {
               <Input placeholder="Image URL" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} required />
               {formData.image && <img src={formData.image} alt="Preview" className="w-32 h-32 object-cover rounded" />}
               <Input placeholder="Author" value={formData.author} onChange={(e) => setFormData({ ...formData, author: e.target.value })} required />
+              <div>
+                <label className="text-sm font-medium mb-1 block">Date</label>
+                <Input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required />
+              </div>
               <Button type="submit" className="w-full">Save</Button>
             </form>
           </DialogContent>
@@ -108,9 +112,9 @@ export default function NewsManager() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-2">{post.content.substring(0, 100)}...</p>
-              <p className="text-xs text-gray-500 mb-4">By {post.author}</p>
+              <p className="text-xs text-gray-500 mb-4">By {post.author} · {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
               <div className="flex gap-2">
-                <Button size="sm" onClick={() => { setEditing(post); setFormData({ title: post.title, content: post.content, image: post.image, author: post.author }); setOpen(true); }}>Edit</Button>
+                <Button size="sm" onClick={() => { setEditing(post); setFormData({ title: post.title, content: post.content, image: post.image, author: post.author, date: post.date?.split('T')[0] || '' }); setOpen(true); }}>Edit</Button>
                 <Button size="sm" variant="destructive" onClick={() => handleDelete(post.id)}>Delete</Button>
               </div>
             </CardContent>
