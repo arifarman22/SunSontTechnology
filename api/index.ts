@@ -46,7 +46,8 @@ async function ensureTablesExist() {
   try { await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS subcategory TEXT DEFAULT ''`; } catch (e) {}
   await sql`CREATE TABLE IF NOT EXISTS solutions (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, features JSONB DEFAULT '[]', benefits JSONB DEFAULT '[]')`;
   await sql`CREATE TABLE IF NOT EXISTS hero_slides (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, subtitle TEXT NOT NULL, description TEXT NOT NULL, image TEXT NOT NULL, cta TEXT DEFAULT '', cta_link TEXT DEFAULT '', theme VARCHAR(50) NOT NULL)`;
-  await sql`CREATE TABLE IF NOT EXISTS news_posts (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
+  await sql`CREATE TABLE IF NOT EXISTS news_posts (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, title TEXT NOT NULL, content TEXT NOT NULL, image TEXT NOT NULL, images JSONB DEFAULT '[]', date VARCHAR(50) NOT NULL, author VARCHAR(255) NOT NULL)`;
+  try { await sql`ALTER TABLE news_posts ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]'`; } catch (e) {}
   await sql`CREATE TABLE IF NOT EXISTS company_info (id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text, about TEXT, mission TEXT, vision TEXT, values JSONB DEFAULT '[]', stats JSONB DEFAULT '{}')`;
   
   try {
@@ -225,7 +226,11 @@ app.get('/api/news', async (req, res) => {
   try {
     await ensureTablesExist();
     const posts = await sql`SELECT * FROM news_posts ORDER BY date DESC`;
-    res.json(posts);
+    const parsed = posts.map(p => ({
+      ...p,
+      images: typeof p.images === 'string' ? JSON.parse(p.images) : (p.images || [])
+    }));
+    res.json(parsed);
   } catch (error: any) {
     console.error('News fetch error:', error.message);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -235,10 +240,10 @@ app.get('/api/news', async (req, res) => {
 app.post('/api/news', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
     await ensureTablesExist();
-    const { title, content, image, date, author } = req.body;
+    const { title, content, image, images, date, author } = req.body;
     const result = await sql`
-      INSERT INTO news_posts (title, content, image, date, author)
-      VALUES (${title}, ${content}, ${image}, ${date}, ${author})
+      INSERT INTO news_posts (title, content, image, images, date, author)
+      VALUES (${title}, ${content}, ${image}, ${JSON.stringify(images || [])}, ${date}, ${author})
       RETURNING *
     `;
     res.status(201).json(result[0]);
@@ -250,10 +255,10 @@ app.post('/api/news', authMiddleware, adminOnly, async (req: AuthRequest, res) =
 
 app.put('/api/news/:id', authMiddleware, adminOnly, async (req: AuthRequest, res) => {
   try {
-    const { title, content, image, date, author } = req.body;
+    const { title, content, image, images, date, author } = req.body;
     const result = await sql`
       UPDATE news_posts
-      SET title = ${title}, content = ${content}, image = ${image}, date = ${date}, author = ${author}
+      SET title = ${title}, content = ${content}, image = ${image}, images = ${JSON.stringify(images || [])}, date = ${date}, author = ${author}
       WHERE id = ${req.params.id}
       RETURNING *
     `;

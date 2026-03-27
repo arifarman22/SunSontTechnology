@@ -36,6 +36,7 @@ export interface NewsPost {
   title: string;
   content: string;
   image: string;
+  images?: string[];
   date: string;
   author: string;
 }
