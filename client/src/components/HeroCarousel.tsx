@@ -45,7 +45,7 @@ const defaultSlides: Slide[] = [
     description: "Step inside Sunson with our immersive VR Panorama - a complete 360° tour of our Shenzhen office and factory.",
     image: banner3,
     cta: "360° VR Experience →",
-    ctaLink: "https://vr.sunsonmall.com/",
+    ctaLink: "https://vr.sunsonmall.com/en/",
     theme: "dark"
   }
 ];
