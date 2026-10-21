@@ -134,12 +134,12 @@ export default function Header() {
                 <Search className="h-4 w-4" />
                 <span>Search</span>
               </button>
-              <Link href="/products/banking" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-banking">Banking Products</Link>
-              <Link href="/products/healthcare" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-healthcare">Healthcare Products</Link>
-              <Link href="/products/security" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-security">Security Products</Link>
-              <Link href="/solutions/cdm" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-cdm">CDM Solution</Link>
-              <Link href="/about" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-about">About</Link>
-              <Link href="/contact" className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-contact">Contact</Link>
+              <Link href="/products/banking" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-banking">Banking Products</Link>
+              <Link href="/products/healthcare" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-healthcare">Healthcare Products</Link>
+              <Link href="/products/security" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-security">Security Products</Link>
+              <Link href="/solutions/cdm" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-cdm">CDM Solution</Link>
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-about">About</Link>
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm text-gray-700 hover:text-[#049fd9]" data-testid="link-mobile-contact">Contact</Link>
             </nav>
           </div>
         )}

@@ -664,9 +664,12 @@ export default function CategoryProducts() {
                   </Button>
                 </Link>
                 <Link href="/about">
-                  <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 font-semibold text-xs h-10 px-6 rounded-xl">
+                  <button 
+                    type="button"
+                    className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white border border-white/25 hover:border-white/40 font-semibold text-xs h-10 px-6 rounded-xl backdrop-blur-xs transition-all shadow-sm"
+                  >
                     About Sunson
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
