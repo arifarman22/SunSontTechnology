@@ -7,7 +7,7 @@ export interface Product {
   title: string;
   description: string;
   category: string;
-  subcategory: string;
+  subcategory?: string;
   image: string;
   features?: string[];
   specifications?: Record<string, string>;
@@ -113,6 +113,7 @@ export class MemStorage implements IStorage {
       title: "Cash Deposit Machine",
       description: "Advanced ATM solution for banking operations",
       category: "Banking",
+      subcategory: "Cash Machines",
       image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800",
       features: ["High security", "Fast processing", "24/7 operation"]
     };
@@ -263,9 +264,10 @@ export class MemStorage implements IStorage {
   }
 }
 
+import { dbStorage } from './db-storage';
+
 function getStorage(): IStorage {
   if (process.env.DATABASE_URL) {
-    const { dbStorage } = require('./db-storage');
     return dbStorage;
   }
   return new MemStorage();

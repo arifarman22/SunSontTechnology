@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Building2, Heart, Shield, ShoppingCart, CreditCard, Grid3x3, ArrowRight } from "lucide-react";
+import { Building2, Heart, Shield, ShoppingCart, CreditCard, Train, Grid3x3, ArrowRight } from "lucide-react";
 import { productCategories, type Category, type ProductItem } from "@/data/megaMenuData";
 
 const iconMap: Record<string, any> = {
@@ -9,6 +9,7 @@ const iconMap: Record<string, any> = {
   Shield,
   ShoppingCart,
   CreditCard,
+  Train,
   Grid3x3
 };
 

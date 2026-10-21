@@ -1,11 +1,38 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://www.sunson-tech.com/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export const FALLBACK_API_URL = 'https://www.sunson-tech.com/api';
+
+async function safeFetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  try {
+    const res = await fetch(`${API_BASE_URL}${cleanEndpoint}`, options);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    // Primary API failed, try fallback
+  }
+
+  // Fallback to production API if different from primary
+  if (API_BASE_URL !== FALLBACK_API_URL) {
+    try {
+      const fallbackRes = await fetch(`${FALLBACK_API_URL}${cleanEndpoint}`, options);
+      if (fallbackRes.ok) {
+        return await fallbackRes.json();
+      }
+    } catch (fallbackErr) {
+      console.error(`API fetch failed for ${cleanEndpoint}:`, fallbackErr);
+    }
+  }
+
+  return [] as unknown as T;
+}
 
 export interface Product {
   id: string;
   title: string;
   description: string;
   category: string;
-  subcategory: string;
+  subcategory?: string;
   image: string;
   features?: string[];
   specifications?: Record<string, string>;
@@ -52,45 +79,38 @@ export interface CompanyInfo {
 
 // Products
 export const getProducts = async (): Promise<Product[]> => {
-  const res = await fetch(`${API_BASE_URL}/products`);
-  return res.json();
+  return safeFetchJson<Product[]>('/products');
 };
 
-export const getProduct = async (id: string): Promise<Product> => {
-  const res = await fetch(`${API_BASE_URL}/products/${id}`);
-  return res.json();
+export const getProduct = async (id: string): Promise<Product | null> => {
+  return safeFetchJson<Product>(`/products/${id}`);
 };
 
 // Solutions
 export const getSolutions = async (): Promise<Solution[]> => {
-  const res = await fetch(`${API_BASE_URL}/solutions`);
-  return res.json();
+  return safeFetchJson<Solution[]>('/solutions');
 };
 
-export const getSolution = async (id: string): Promise<Solution> => {
-  const res = await fetch(`${API_BASE_URL}/solutions/${id}`);
-  return res.json();
+export const getSolution = async (id: string): Promise<Solution | null> => {
+  return safeFetchJson<Solution>(`/solutions/${id}`);
 };
 
 // Hero Slides
 export const getHeroSlides = async (): Promise<HeroSlide[]> => {
-  const res = await fetch(`${API_BASE_URL}/hero-slides`);
-  return res.json();
+  return safeFetchJson<HeroSlide[]>('/hero-slides');
 };
 
 // News
 export const getNewsPosts = async (): Promise<NewsPost[]> => {
-  const res = await fetch(`${API_BASE_URL}/news`);
-  return res.json();
+  return safeFetchJson<NewsPost[]>('/news');
 };
 
-export const getNewsPost = async (id: string): Promise<NewsPost> => {
-  const res = await fetch(`${API_BASE_URL}/news/${id}`);
-  return res.json();
+export const getNewsPost = async (id: string): Promise<NewsPost | null> => {
+  return safeFetchJson<NewsPost>(`/news/${id}`);
 };
 
 // Company Info
-export const getCompanyInfo = async (): Promise<CompanyInfo> => {
-  const res = await fetch(`${API_BASE_URL}/company-info`);
-  return res.json();
+export const getCompanyInfo = async (): Promise<CompanyInfo | null> => {
+  return safeFetchJson<CompanyInfo>('/company-info');
 };
+
